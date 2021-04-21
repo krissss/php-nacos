@@ -1,0 +1,34 @@
+{
+  "name": "kriss/php-nacos",
+  "description": "Nacos for PHP with openAPI",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "kriss",
+      "email": "462679766@qq.com"
+    }
+  ],
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=7.1, <8.0",
+    "psr/log": "^1.1",
+    "symfony/http-client": "^4.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^7.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Kriss\\Nacos\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Kriss\\Nacos\\Tests\\": "tests"
+    }
+  },
+  "scripts": {
+    "test": "phpunit --bootstrap tests/bootstrap.php --testdox tests"
+  }
+}
