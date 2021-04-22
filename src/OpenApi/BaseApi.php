@@ -31,6 +31,14 @@ abstract class BaseApi
     }
 
     /**
+     * @return Nacos
+     */
+    public function getNacos(): Nacos
+    {
+        return $this->nacos;
+    }
+
+    /**
      * @param LoggerInterface $logger
      * @return $this
      */
@@ -55,8 +63,9 @@ abstract class BaseApi
 
         $response = $this->getHttpClient()->request(strtoupper($method), $this->buildUrl($uri), $options);
         if (($statusCode = $response->getStatusCode()) !== ServerResponseCode::OK) {
+            var_dump($response->getContent(false));
             $this->logger->error('response exception: ' . $response->getContent(false), ['code' => $statusCode]);
-            throw new ServerException(ServerResponseCode::getDescription($statusCode), $statusCode);
+            throw new ServerException($response->getContent(false), $statusCode);
         }
         try {
             return $response->toArray(false);

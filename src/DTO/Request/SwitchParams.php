@@ -13,7 +13,7 @@ class SwitchParams
      */
     private $value;
     /**
-     * @var boolean
+     * @var boolean|null
      */
     private $debug;
 
@@ -60,18 +60,18 @@ class SwitchParams
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function isDebug(): bool
+    public function getDebug(): ?bool
     {
         return $this->debug;
     }
 
     /**
-     * @param bool $debug
+     * @param bool|null $debug
      * @return SwitchParams
      */
-    public function setDebug(bool $debug): SwitchParams
+    public function setDebug(?bool $debug): SwitchParams
     {
         $this->debug = $debug;
         return $this;

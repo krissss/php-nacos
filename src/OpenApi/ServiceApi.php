@@ -7,6 +7,7 @@ use Kriss\Nacos\DTO\Request\ServiceParams;
 use Kriss\Nacos\DTO\Response\ServiceDetailModel;
 use Kriss\Nacos\DTO\Response\ServiceInstanceListModel;
 use Kriss\Nacos\DTO\Response\ServiceListModel;
+use Kriss\Nacos\Exceptions\ServerException;
 
 /**
  * 服务
@@ -20,16 +21,21 @@ class ServiceApi extends BaseApi
      */
     public function create(ServiceParams $params): bool
     {
-        $result = $this->api('/nacos/v1/ns/service', [
-            'query' => array_filter([
-                'serviceName' => $params->getServiceName(),
-                'groupName' => $params->getGroupName(),
-                'namespaceId' => $params->getNamespaceId(),
-                'protectThreshold' => $params->getProtectThreshold(),
-                'metadata' => $params->getMetadata(),
-                'selector' => $params->getSelector(),
-            ]),
-        ], 'POST');
+        try {
+            $result = $this->api('/nacos/v1/ns/service', [
+                'query' => [
+                    'serviceName' => $params->getServiceName(),
+                    'groupName' => $params->getGroupName(),
+                    'namespaceId' => $params->getNamespaceId(),
+                    'protectThreshold' => $params->getProtectThreshold(),
+                    'metadata' => $params->getMetadataJson(),
+                    'selector' => $params->getSelectorJson(),
+                ],
+            ], 'POST');
+        } catch (ServerException $e) {
+            // 同名创建时返回失败
+            return false;
+        }
         return $result === 'ok';
     }
 
@@ -40,13 +46,18 @@ class ServiceApi extends BaseApi
      */
     public function delete(ServiceParams $params): bool
     {
-        $result = $this->api('/nacos/v1/ns/service', [
-            'query' => array_filter([
-                'serviceName' => $params->getServiceName(),
-                'groupName' => $params->getGroupName(),
-                'namespaceId' => $params->getNamespaceId(),
-            ]),
-        ], 'DELETE');
+        try {
+            $result = $this->api('/nacos/v1/ns/service', [
+                'query' => [
+                    'serviceName' => $params->getServiceName(),
+                    'groupName' => $params->getGroupName(),
+                    'namespaceId' => $params->getNamespaceId(),
+                ],
+            ], 'DELETE');
+        } catch (ServerException $e) {
+            // 服务不存在时删除失败
+            return false;
+        }
         return $result === 'ok';
     }
 
@@ -57,16 +68,21 @@ class ServiceApi extends BaseApi
      */
     public function modify(ServiceParams $params): bool
     {
-        $result = $this->api('/nacos/v1/ns/service', [
-            'query' => array_filter([
-                'serviceName' => $params->getServiceName(),
-                'groupName' => $params->getGroupName(),
-                'namespaceId' => $params->getNamespaceId(),
-                'protectThreshold' => $params->getProtectThreshold(),
-                'metadata' => $params->getMetadata(),
-                'selector' => $params->getSelector(),
-            ]),
-        ], 'PUT');
+        try {
+            $result = $this->api('/nacos/v1/ns/service', [
+                'query' => [
+                    'serviceName' => $params->getServiceName(),
+                    'groupName' => $params->getGroupName() ?? 'DEFAULT_GROUP',
+                    'namespaceId' => $params->getNamespaceId(),
+                    'protectThreshold' => $params->getProtectThreshold(), // 必须
+                    'metadata' => $params->getMetadataJson(),
+                    'selector' => $params->getSelectorJson(),
+                ],
+            ], 'PUT');
+        } catch (ServerException $e) {
+            // 修改失败
+            return false;
+        }
         return $result === 'ok';
     }
 
@@ -95,7 +111,7 @@ class ServiceApi extends BaseApi
      * @param ServiceParams $params
      * @return ServiceDetailModel
      */
-    public function detail(ServiceParams $params): ServiceDetailModel
+    public function detail(ServiceParams $params): ?ServiceDetailModel
     {
         $result = $this->api('/nacos/v1/ns/service', [
             'query' => [
@@ -117,13 +133,13 @@ class ServiceApi extends BaseApi
     public function instanceList(ServiceParams $params, array $clusters = [], bool $healthyOnly = false): ServiceInstanceListModel
     {
         $result = $this->api('/nacos/v1/ns/instance/list', [
-            'query' => array_filter([
+            'query' => [
                 'serviceName' => $params->getServiceName(),
                 'groupName' => $params->getGroupName(),
                 'namespaceId' => $params->getNamespaceId(),
                 'clusters' => implode(',', $clusters),
                 'healthyOnly' => $healthyOnly,
-            ]),
+            ],
         ]);
         return new ServiceInstanceListModel($result);
     }

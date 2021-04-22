@@ -14,5 +14,10 @@ namespace Kriss\Nacos\DTO\Response;
  */
 class InstanceDetailModel extends BaseModel
 {
-
+    public function toJson()
+    {
+        $this->attributes['serviceName'] = $this->service;
+        //unset($this->attributes['metadata'], $this->attributes['service']);
+        return json_encode($this->attributes);
+    }
 }

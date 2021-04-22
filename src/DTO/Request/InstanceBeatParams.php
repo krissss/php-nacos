@@ -17,11 +17,11 @@ class InstanceBeatParams
      */
     private $ephemeral;
     /**
-     * @var string json
+     * @var InstanceBeatJson
      */
     private $beat;
 
-    public function __construct(string $serviceName, string $beat)
+    public function __construct(string $serviceName, InstanceBeatJson $beat)
     {
         $this->serviceName = $serviceName;
         $this->beat = $beat;
@@ -82,18 +82,26 @@ class InstanceBeatParams
     }
 
     /**
-     * @return string
+     * @return InstanceBeatJson
      */
-    public function getBeat(): string
+    public function getBeat(): InstanceBeatJson
     {
         return $this->beat;
     }
 
     /**
-     * @param string $beat
+     * @return string
+     */
+    public function getBeatJson(): string
+    {
+        return $this->beat->toJson();
+    }
+
+    /**
+     * @param InstanceBeatJson $beat
      * @return InstanceBeatParams
      */
-    public function setBeat(string $beat): InstanceBeatParams
+    public function setBeat(InstanceBeatJson $beat): InstanceBeatParams
     {
         $this->beat = $beat;
         return $this;

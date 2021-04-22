@@ -12,14 +12,14 @@ class NamespaceApi extends BaseApi
 {
     /**
      * 查询命名空间列表
-     * @return array NamespaceInfo[]
+     * @return array|NamespaceModel[]
      */
     public function list(): array
     {
         $result = $this->api('/nacos/v1/console/namespaces');
         $list = [];
         if (isset($result['data'])) {
-            foreach ($result as $item) {
+            foreach ($result['data'] as $item) {
                 $list[] = new NamespaceModel($item);
             }
         }
@@ -52,16 +52,17 @@ class NamespaceApi extends BaseApi
     {
         $result = $this->api('/nacos/v1/console/namespaces', [
             'body' => [
-                'customNamespaceId' => $params->getCustomNamespaceId(),
-                'namespaceName' => $params->getNamespaceName(),
+                'namespace' => $params->getCustomNamespaceId(),
+                'namespaceShowName' => $params->getNamespaceName(),
                 'namespaceDesc' => $params->getNamespaceDesc(),
             ],
-        ], 'POST');
+        ], 'PUT');
         return is_bool($result) ? $result : $result === 'true';
     }
 
     /**
      * 删除命名空间
+     * 当不存在该命名空间ID时，返回的值也是 true
      * @param string $namespaceId 命名空间ID
      * @return bool
      */

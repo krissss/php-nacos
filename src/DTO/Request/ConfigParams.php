@@ -20,7 +20,7 @@ class ConfigParams
      */
     private $tenant;
 
-    public function __construct(string $dataId, string $group)
+    public function __construct(string $dataId, string $group = 'DEFAULT_GROUP')
     {
         $this->dataId = $dataId;
         $this->group = $group;

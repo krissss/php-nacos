@@ -2,6 +2,8 @@
 
 namespace Kriss\Nacos\DTO\Request;
 
+use Kriss\Nacos\Support\Json;
+
 class ServiceParams
 {
     /**
@@ -26,12 +28,12 @@ class ServiceParams
     private $protectThreshold;
     /**
      * 元数据
-     * @var string|null
+     * @var array|null
      */
     private $metadata;
     /**
      * 访问策略
-     * @var string|null json 格式
+     * @var array|null
      */
     private $selector;
 
@@ -113,36 +115,58 @@ class ServiceParams
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getMetadata(): ?string
+    public function getMetadata(): ?array
     {
         return $this->metadata;
     }
 
     /**
-     * @param string|null $metadata
+     * @return string|null
+     */
+    public function getMetadataJson(): ?string
+    {
+        if ($this->metadata) {
+            return Json::encode($this->metadata);
+        }
+        return null;
+    }
+
+    /**
+     * @param array|null $metadata
      * @return ServiceParams
      */
-    public function setMetadata(?string $metadata): ServiceParams
+    public function setMetadata(?array $metadata): ServiceParams
     {
         $this->metadata = $metadata;
         return $this;
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getSelector(): ?string
+    public function getSelector(): ?array
     {
         return $this->selector;
     }
 
     /**
-     * @param string|null $selector
+     * @return string|null
+     */
+    public function getSelectorJson(): ?string
+    {
+        if ($this->selector) {
+            return Json::encode($this->selector);
+        }
+        return null;
+    }
+
+    /**
+     * @param array|null $selector
      * @return ServiceParams
      */
-    public function setSelector(?string $selector): ServiceParams
+    public function setSelector(?array $selector): ServiceParams
     {
         $this->selector = $selector;
         return $this;

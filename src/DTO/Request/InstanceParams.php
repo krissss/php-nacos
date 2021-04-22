@@ -2,6 +2,8 @@
 
 namespace Kriss\Nacos\DTO\Request;
 
+use Kriss\Nacos\Support\Json;
+
 class InstanceParams
 {
     /**
@@ -41,7 +43,7 @@ class InstanceParams
     private $healthy;
     /**
      * 扩展信息
-     * @var string|null
+     * @var array|null
      */
     private $metadata;
     /**
@@ -194,18 +196,29 @@ class InstanceParams
     }
 
     /**
-     * @return string|null
+     * @return array|null
      */
-    public function getMetadata(): ?string
+    public function getMetadata(): ?array
     {
         return $this->metadata;
     }
 
     /**
-     * @param string|null $metadata
+     * @return string|null
+     */
+    public function getMetadataJson(): ?string
+    {
+        if ($this->metadata) {
+            return Json::encode($this->metadata);
+        }
+        return null;
+    }
+
+    /**
+     * @param array|null $metadata
      * @return InstanceParams
      */
-    public function setMetadata(?string $metadata): InstanceParams
+    public function setMetadata(?array $metadata): InstanceParams
     {
         $this->metadata = $metadata;
         return $this;

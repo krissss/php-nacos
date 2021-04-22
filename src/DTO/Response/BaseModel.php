@@ -4,7 +4,7 @@ namespace Kriss\Nacos\DTO\Response;
 
 abstract class BaseModel
 {
-    private $attributes;
+    protected $attributes;
 
     public function __construct($attributes = [])
     {

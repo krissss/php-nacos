@@ -6,6 +6,7 @@ use Kriss\Nacos\DTO\Request\ConfigParams;
 use Kriss\Nacos\DTO\Request\PageParams;
 use Kriss\Nacos\DTO\Response\ConfigDetailModel;
 use Kriss\Nacos\DTO\Response\PaginationModel;
+use Kriss\Nacos\Exceptions\ServerException;
 
 /**
  * 配置管理
@@ -17,15 +18,19 @@ class ConfigApi extends BaseApi
      * @param ConfigParams $params
      * @return string
      */
-    public function get(ConfigParams $params): string
+    public function get(ConfigParams $params): ?string
     {
-        return $this->api('/nacos/v1/cs/configs', [
-            'query' => array_filter([
-                'tenant' => $params->getTenant(),
-                'dataId' => $params->getDataId(),
-                'group' => $params->getGroup(),
-            ]),
-        ]);
+        try {
+            return $this->api('/nacos/v1/cs/configs', [
+                'query' => [
+                    'tenant' => $params->getTenant(),
+                    'dataId' => $params->getDataId(),
+                    'group' => $params->getGroup(),
+                ],
+            ]);
+        } catch (ServerException $e) {
+            return null;
+        }
     }
 
     /**
@@ -62,13 +67,13 @@ class ConfigApi extends BaseApi
     public function publish(ConfigParams $params, string $content, string $type = null): bool
     {
         $result = $this->api('/nacos/v1/cs/configs', [
-            'body' => array_filter([
+            'body' => [
                 'tenant' => $params->getTenant(),
                 'dataId' => $params->getDataId(),
                 'group' => $params->getGroup(),
                 'content' => $content,
                 'type' => $type,
-            ]),
+            ],
         ], 'POST');
         return is_bool($result) ? $result : $result === 'true';
     }
@@ -81,11 +86,11 @@ class ConfigApi extends BaseApi
     public function delete(ConfigParams $params): bool
     {
         $result = $this->api('/nacos/v1/cs/configs', [
-            'query' => array_filter([
+            'query' => [
                 'tenant' => $params->getTenant(),
                 'dataId' => $params->getDataId(),
                 'group' => $params->getGroup(),
-            ]),
+            ],
         ], 'DELETE');
         return is_bool($result) ? $result : $result === 'true';
     }
@@ -99,13 +104,13 @@ class ConfigApi extends BaseApi
     public function historyList(ConfigParams $params, PageParams $page): array
     {
         $result = $this->api('/nacos/v1/cs/history?search=accurate', [
-            'query' => array_filter([
+            'query' => [
                 'tenant' => $params->getTenant(),
                 'dataId' => $params->getDataId(),
                 'group' => $params->getGroup(),
                 'pageNo' => $page->getPageNo(),
                 'pageSize' => $page->getPageSize(),
-            ]),
+            ],
         ]);
         $list = [];
         if (isset($result['pageItems'])) {
@@ -122,15 +127,20 @@ class ConfigApi extends BaseApi
     /**
      * 查询历史版本详情
      * @param string $nid 配置项历史版本ID
-     * @return ConfigDetailModel
+     * @return ConfigDetailModel|null
      */
-    public function historyDetail(string $nid): ConfigDetailModel
+    public function historyDetail(string $nid): ?ConfigDetailModel
     {
-        $result = $this->api('/nacos/v1/cs/history', [
-            'query' => [
-                'nid' => $nid,
-            ],
-        ]);
+        try {
+            $result = $this->api('/nacos/v1/cs/history', [
+                'query' => [
+                    'nid' => $nid,
+                ],
+            ]);
+        } catch (ServerException $e) {
+            // 不存在时
+            return null;
+        }
         return new ConfigDetailModel($result);
     }
 
@@ -138,6 +148,7 @@ class ConfigApi extends BaseApi
      * 查询配置上一版本信息(1.4起)
      * @param string $id 配置ID
      * @return ConfigDetailModel
+     * @internal 接口存在问题，未完成
      */
     public function historyPrevious(string $id): ConfigDetailModel
     {

@@ -28,13 +28,13 @@ class OperatorApi extends BaseApi
      * @param SwitchParams $params
      * @return bool
      */
-    public function modify(SwitchParams $params): bool
+    public function switchModify(SwitchParams $params): bool
     {
         $result = $this->api('/nacos/v1/ns/operator/switches', [
             'query' => [
                 'entry' => $params->getEntry(),
                 'value' => $params->getValue(),
-                'debug' => $params->isDebug(),
+                'debug' => $params->getDebug(),
             ],
         ], 'PUT');
         return $result === 'ok';
@@ -58,9 +58,9 @@ class OperatorApi extends BaseApi
     public function servers(bool $healthy = null): array
     {
         $result = $this->api('/nacos/v1/ns/operator/servers', [
-            'query' => array_filter([
+            'query' => [
                 'healthy' => $healthy,
-            ])
+            ]
         ]);
         $list = [];
         if (isset($result['servers'])) {
