@@ -8,8 +8,8 @@ use Kriss\Nacos\DTO\Response\Service\ServiceHostModel;
 use Kriss\Nacos\DTO\Response\ServiceInstanceListModel;
 use Kriss\Nacos\DTO\Response\ServiceListModel;
 use Kriss\Nacos\OpenApi\ServiceApi;
-use Kriss\Nacos\Tests\Traits\NacosTrait;
-use Kriss\Nacos\Tests\Traits\TestsConfigTrait;
+use Kriss\Nacos\Tests\Mocks\Traits\NacosTrait;
+use Kriss\Nacos\Tests\Mocks\Traits\TestsConfigTrait;
 use PHPUnit\Framework\TestCase;
 
 class ServiceApiTest extends TestCase

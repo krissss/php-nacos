@@ -4,8 +4,8 @@ namespace Kriss\Nacos\Tests\OpenApi;
 
 use Kriss\Nacos\DTO\Request\NamespaceParams;
 use Kriss\Nacos\OpenApi\NamespaceApi;
-use Kriss\Nacos\Tests\Traits\NacosTrait;
-use Kriss\Nacos\Tests\Traits\TestsConfigTrait;
+use Kriss\Nacos\Tests\Mocks\Traits\NacosTrait;
+use Kriss\Nacos\Tests\Mocks\Traits\TestsConfigTrait;
 use PHPUnit\Framework\TestCase;
 
 class NamespaceApiTest extends TestCase

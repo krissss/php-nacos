@@ -1,6 +1,6 @@
 <?php
 
-namespace Kriss\Nacos\Tests\DTO\Response;
+namespace Kriss\Nacos\Tests\Mocks;
 
 use Kriss\Nacos\DTO\Response\BaseModel;
 
@@ -8,7 +8,7 @@ use Kriss\Nacos\DTO\Response\BaseModel;
  * @property-read string $aa
  * @property-read bool $bb
  */
-class BaseModel1 extends BaseModel
+class MockBaseModel1 extends BaseModel
 {
 
 }

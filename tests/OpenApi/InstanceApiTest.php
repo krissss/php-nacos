@@ -11,8 +11,8 @@ use Kriss\Nacos\DTO\Response\InstanceDetailModel;
 use Kriss\Nacos\Exceptions\ServerException;
 use Kriss\Nacos\OpenApi\InstanceApi;
 use Kriss\Nacos\OpenApi\ServiceApi;
-use Kriss\Nacos\Tests\Traits\NacosTrait;
-use Kriss\Nacos\Tests\Traits\TestsConfigTrait;
+use Kriss\Nacos\Tests\Mocks\Traits\NacosTrait;
+use Kriss\Nacos\Tests\Mocks\Traits\TestsConfigTrait;
 use PHPUnit\Framework\TestCase;
 
 class InstanceApiTest extends TestCase

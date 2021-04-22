@@ -8,7 +8,7 @@ use Kriss\Nacos\DTO\Response\ServerLeaderModel;
 use Kriss\Nacos\DTO\Response\ServerModel;
 use Kriss\Nacos\DTO\Response\SwitchesModel;
 use Kriss\Nacos\OpenApi\OperatorApi;
-use Kriss\Nacos\Tests\Traits\NacosTrait;
+use Kriss\Nacos\Tests\Mocks\Traits\NacosTrait;
 use PHPUnit\Framework\TestCase;
 
 class OperatorApiTest extends TestCase

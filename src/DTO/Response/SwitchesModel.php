@@ -2,7 +2,7 @@
 
 namespace Kriss\Nacos\DTO\Response;
 
-use Kriss\Nacos\DTO\Response\Swithes\SwitchHealthParamsModel;
+use Kriss\Nacos\DTO\Response\Switches\SwitchHealthParamsModel;
 
 /**
  * @property-read null|mixed $masters

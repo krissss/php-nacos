@@ -14,7 +14,7 @@ class ConfigRepository
     /**
      * @param string|int $key
      * @param mixed $default
-     * @return mixed
+     * @return mixed|null
      */
     public function get($key, $default = null)
     {

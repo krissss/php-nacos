@@ -1,6 +1,6 @@
 <?php
 
-namespace Kriss\Nacos\Tests\Traits;
+namespace Kriss\Nacos\Tests\Mocks\Traits;
 
 use Kriss\Nacos\ConfigRepository;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Kriss\Nacos\DTO\Response\Swithes;
+namespace Kriss\Nacos\DTO\Response\Switches;
 
 use Kriss\Nacos\DTO\Response\BaseModel;
 

@@ -5,8 +5,7 @@ namespace Kriss\Nacos\OpenApi;
 use Kriss\Nacos\Enums\ServerResponseCode;
 use Kriss\Nacos\Exceptions\ServerException;
 use Kriss\Nacos\Nacos;
-use Psr\Log\LoggerInterface;
-use Psr\Log\NullLogger;
+use Kriss\Nacos\Support\AccessToken;
 use Symfony\Component\HttpClient\Exception\JsonException;
 use Symfony\Component\HttpClient\HttpClient;
 
@@ -19,33 +18,10 @@ abstract class BaseApi
      * @var Nacos
      */
     private $nacos;
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
 
     public function __construct(Nacos $nacos)
     {
         $this->nacos = $nacos;
-        $this->logger = new NullLogger();
-    }
-
-    /**
-     * @return Nacos
-     */
-    public function getNacos(): Nacos
-    {
-        return $this->nacos;
-    }
-
-    /**
-     * @param LoggerInterface $logger
-     * @return $this
-     */
-    public function setLogger(LoggerInterface $logger): self
-    {
-        $this->logger = $logger;
-        return $this;
     }
 
     /**
@@ -57,16 +33,34 @@ abstract class BaseApi
      */
     protected function api($uri, $options = [], $method = 'GET')
     {
+        $this->nacos->log($requestParams = ['type' => 'request', 'uri' => $uri, 'options' => $options, 'method' => $method]);
+
         $options = array_merge([
             'max_redirects' => 0,
         ], $options);
 
-        $response = $this->getHttpClient()->request(strtoupper($method), $this->buildUrl($uri), $options);
-        if (($statusCode = $response->getStatusCode()) !== ServerResponseCode::OK) {
-            var_dump($response->getContent(false));
-            $this->logger->error('response exception: ' . $response->getContent(false), ['code' => $statusCode]);
-            throw new ServerException($response->getContent(false), $statusCode);
+        foreach (['query', 'body'] as $k) {
+            if (isset($options[$k])) {
+                $options[$k] = array_filter($options[$k], function ($value) {
+                    return $value !== null;
+                });
+            }
         }
+        if ($this->nacos->config->get('auth_enabled')) {
+            $options['query']['accessToken'] = (new AccessToken($this->nacos))->get()->accessToken;
+        }
+
+        $response = $this->getHttpClient()->request(strtoupper($method), $this->nacos->buildUrl($uri), $options);
+        $statusCode = $response->getStatusCode();
+        $content = $response->getContent(false);
+
+        $this->nacos->log($responseData = ['type' => 'response', 'code' => $statusCode, 'content' => $content]);
+
+        if (($statusCode = $response->getStatusCode()) !== ServerResponseCode::OK) {
+            $this->nacos->log(['type' => 'response not ok', 'request' => $requestParams, 'response' => $responseData], 'warning');
+            throw new ServerException($content, $statusCode);
+        }
+
         try {
             return $response->toArray(false);
         } catch (JsonException $exception) {
@@ -88,20 +82,5 @@ abstract class BaseApi
         $this->httpClient = HttpClient::create();
 
         return $this->httpClient;
-    }
-
-    /**
-     * 构建完整的 url 地址
-     * @param string $uri
-     * @param array $params query 参数
-     * @return string
-     */
-    protected function buildUrl(string $uri, $params = []): string
-    {
-        $url = rtrim($this->nacos->config->get('baseUri'), '/') . '/' . ltrim($uri, '/');
-        if ($params) {
-            $url .= (strpos($url, '?') === false ? '?' : '&') . http_build_query($params);
-        }
-        return $url;
     }
 }

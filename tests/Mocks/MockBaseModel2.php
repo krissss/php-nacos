@@ -1,23 +1,23 @@
 <?php
 
-namespace Kriss\Nacos\Tests\DTO\Response;
+namespace Kriss\Nacos\Tests\Mocks;
 
 use Kriss\Nacos\DTO\Response\BaseModel;
 
 /**
- * @property-read BaseModel1 $base1
- * @property-read array|BaseModel1[] $base2
+ * @property-read MockBaseModel1 $base1
+ * @property-read array|MockBaseModel1[] $base2
  */
-class BaseModel2 extends BaseModel
+class MockBaseModel2 extends BaseModel
 {
     protected function specialTypes(): array
     {
         return [
-            'base1' => BaseModel1::class,
+            'base1' => MockBaseModel1::class,
             'base2' => function ($value) {
                 $data = [];
                 foreach ($value as $item) {
-                    $data[] = new BaseModel1($item);
+                    $data[] = new MockBaseModel1($item);
                 }
                 return $data;
             }

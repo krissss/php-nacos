@@ -7,8 +7,8 @@ use Kriss\Nacos\DTO\Request\PageParams;
 use Kriss\Nacos\DTO\Response\ConfigDetailModel;
 use Kriss\Nacos\DTO\Response\PaginationModel;
 use Kriss\Nacos\OpenApi\ConfigApi;
-use Kriss\Nacos\Tests\Traits\NacosTrait;
-use Kriss\Nacos\Tests\Traits\TestsConfigTrait;
+use Kriss\Nacos\Tests\Mocks\Traits\NacosTrait;
+use Kriss\Nacos\Tests\Mocks\Traits\TestsConfigTrait;
 use PHPUnit\Framework\TestCase;
 
 class ConfigApiTest extends TestCase
@@ -64,7 +64,7 @@ class ConfigApiTest extends TestCase
         $this->assertEquals(null, $detail);
     }
 
-    public function testHistoryPrevious()
+    public function __testHistoryPrevious()
     {
         // 接口问题
 //        $dataId = $this->getTestsConfig('create_config_data_id');
@@ -83,7 +83,7 @@ class ConfigApiTest extends TestCase
 //        $this->api->delete(new ConfigParams($dataId));
     }
 
-    public function testListen()
+    public function __testListen()
     {
         // 长轮询测试不好测
     }

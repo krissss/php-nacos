@@ -103,7 +103,7 @@ class InstanceBeatJson
      * @param int $port
      * @return InstanceBeatJson
      */
-    public function setPort($port)
+    public function setPort(int $port)
     {
         $this->port = $port;
         return $this;
