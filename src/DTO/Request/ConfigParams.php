@@ -2,6 +2,8 @@
 
 namespace Kriss\Nacos\DTO\Request;
 
+use Kriss\Nacos\Model\ConfigModel;
+
 class ConfigParams
 {
     /**
@@ -10,7 +12,7 @@ class ConfigParams
      */
     private $dataId;
     /**
-     * 	配置分组
+     *    配置分组
      * @var string
      */
     private $group;
@@ -24,6 +26,16 @@ class ConfigParams
     {
         $this->dataId = $dataId;
         $this->group = $group;
+    }
+
+    /**
+     * @param ConfigModel $config
+     * @return static
+     */
+    public static function loadFromConfigModel(ConfigModel $config): self
+    {
+        return (new static($config->dataId, $config->group))
+            ->setTenant($config->tenant);
     }
 
     /**

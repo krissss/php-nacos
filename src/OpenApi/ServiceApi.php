@@ -7,7 +7,8 @@ use Kriss\Nacos\DTO\Request\ServiceParams;
 use Kriss\Nacos\DTO\Response\ServiceDetailModel;
 use Kriss\Nacos\DTO\Response\ServiceInstanceListModel;
 use Kriss\Nacos\DTO\Response\ServiceListModel;
-use Kriss\Nacos\Exceptions\ServerException;
+use Kriss\Nacos\Enums\NacosResponseCode;
+use Kriss\Nacos\Exceptions\NacosException;
 
 /**
  * 服务
@@ -18,6 +19,7 @@ class ServiceApi extends BaseApi
      * 创建服务
      * @param ServiceParams $params
      * @return bool
+     * @throws NacosException
      */
     public function create(ServiceParams $params): bool
     {
@@ -32,9 +34,12 @@ class ServiceApi extends BaseApi
                     'selector' => $params->getSelectorJson(),
                 ],
             ], 'POST');
-        } catch (ServerException $e) {
-            // 同名创建时返回失败
-            return false;
+        } catch (NacosException $e) {
+            if ($e->getCode() === NacosResponseCode::BAD_REQUEST && strpos($e->getMessage(), 'caused: specified service already exists, serviceName') === 0) {
+                // 同名创建时返回失败
+                return false;
+            }
+            throw $e;
         }
         return $result === 'ok';
     }
@@ -43,6 +48,7 @@ class ServiceApi extends BaseApi
      * 删除服务
      * @param ServiceParams $params
      * @return bool
+     * @throws NacosException
      */
     public function delete(ServiceParams $params): bool
     {
@@ -54,9 +60,12 @@ class ServiceApi extends BaseApi
                     'namespaceId' => $params->getNamespaceId(),
                 ],
             ], 'DELETE');
-        } catch (ServerException $e) {
-            // 服务不存在时删除失败
-            return false;
+        } catch (NacosException $e) {
+            if ($e->getCode() === NacosResponseCode::BAD_REQUEST && strpos($e->getMessage(), 'caused: specified service not exist, serviceName') === 0) {
+                // 服务不存在时删除失败
+                return false;
+            }
+            throw $e;
         }
         return $result === 'ok';
     }
@@ -65,6 +74,7 @@ class ServiceApi extends BaseApi
      * 修改服务
      * @param ServiceParams $params
      * @return bool
+     * @throws NacosException
      */
     public function modify(ServiceParams $params): bool
     {
@@ -79,9 +89,12 @@ class ServiceApi extends BaseApi
                     'selector' => $params->getSelectorJson(),
                 ],
             ], 'PUT');
-        } catch (ServerException $e) {
-            // 修改失败
-            return false;
+        } catch (NacosException $e) {
+            if ($e->getCode() === NacosResponseCode::SERVER_ERROR && strpos($e->getMessage(), 'not found!;') !== false) {
+                // caused: service DEFAULT_GROUP@@test_service_name_123123123 not found!;
+                return false;
+            }
+            throw $e;
         }
         return $result === 'ok';
     }
@@ -92,6 +105,7 @@ class ServiceApi extends BaseApi
      * @param string|null $groupName
      * @param string|null $namespaceId
      * @return ServiceListModel
+     * @throws NacosException
      */
     public function list(PageParams $page, string $groupName = null, string $namespaceId = null): ServiceListModel
     {
@@ -110,16 +124,25 @@ class ServiceApi extends BaseApi
      * 查询一个服务
      * @param ServiceParams $params
      * @return ServiceDetailModel
+     * @throws NacosException
      */
     public function detail(ServiceParams $params): ?ServiceDetailModel
     {
-        $result = $this->api('/nacos/v1/ns/service', [
-            'query' => [
-                'serviceName' => $params->getServiceName(),
-                'groupName' => $params->getGroupName(),
-                'namespaceId' => $params->getNamespaceId(),
-            ],
-        ]);
+        try {
+            $result = $this->api('/nacos/v1/ns/service', [
+                'query' => [
+                    'serviceName' => $params->getServiceName(),
+                    'groupName' => $params->getGroupName(),
+                    'namespaceId' => $params->getNamespaceId(),
+                ],
+            ]);
+        } catch (NacosException $e) {
+            if ($e->getCode() === NacosResponseCode::SERVER_ERROR && strpos($e->getMessage(), 'is not found!') !== false) {
+                // caused: service DEFAULT_GROUP@@php_service is not found!
+                return null;
+            }
+            throw $e;
+        }
         return new ServiceDetailModel($result);
     }
 
@@ -129,6 +152,7 @@ class ServiceApi extends BaseApi
      * @param array $clusters
      * @param bool $healthyOnly
      * @return ServiceInstanceListModel
+     * @throws NacosException
      */
     public function instanceList(ServiceParams $params, array $clusters = [], bool $healthyOnly = false): ServiceInstanceListModel
     {

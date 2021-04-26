@@ -6,7 +6,8 @@ use Kriss\Nacos\DTO\Request\ConfigParams;
 use Kriss\Nacos\DTO\Request\PageParams;
 use Kriss\Nacos\DTO\Response\ConfigDetailModel;
 use Kriss\Nacos\DTO\Response\PaginationModel;
-use Kriss\Nacos\Exceptions\ServerException;
+use Kriss\Nacos\Enums\NacosResponseCode;
+use Kriss\Nacos\Exceptions\NacosException;
 
 /**
  * 配置管理
@@ -17,6 +18,7 @@ class ConfigApi extends BaseApi
      * 获取配置
      * @param ConfigParams $params
      * @return string
+     * @throws NacosException
      */
     public function get(ConfigParams $params): ?string
     {
@@ -27,9 +29,13 @@ class ConfigApi extends BaseApi
                     'dataId' => $params->getDataId(),
                     'group' => $params->getGroup(),
                 ],
+                'parse_response_json' => false, // 不解析 content 返回的 json 数据
             ]);
-        } catch (ServerException $e) {
-            return null;
+        } catch (NacosException $e) {
+            if ($e->getCode() === NacosResponseCode::NOT_FOUND) {
+                return null;
+            }
+            throw $e;
         }
     }
 
@@ -39,6 +45,7 @@ class ConfigApi extends BaseApi
      * @param string $contentMD5
      * @param int $longPullingTimeout 单位秒
      * @return string
+     * @throws NacosException
      */
     public function listen(ConfigParams $params, string $contentMD5, $longPullingTimeout = 30): string
     {
@@ -63,6 +70,7 @@ class ConfigApi extends BaseApi
      * @param string $content
      * @param string|null $type
      * @return bool
+     * @throws NacosException
      */
     public function publish(ConfigParams $params, string $content, string $type = null): bool
     {
@@ -82,6 +90,7 @@ class ConfigApi extends BaseApi
      * 删除配置
      * @param ConfigParams $params
      * @return bool
+     * @throws NacosException
      */
     public function delete(ConfigParams $params): bool
     {
@@ -100,6 +109,7 @@ class ConfigApi extends BaseApi
      * @param ConfigParams $params
      * @param PageParams $page
      * @return array [ConfigDetailModel[], PaginationModel]
+     * @throws NacosException
      */
     public function historyList(ConfigParams $params, PageParams $page): array
     {
@@ -127,7 +137,8 @@ class ConfigApi extends BaseApi
     /**
      * 查询历史版本详情
      * @param string $nid 配置项历史版本ID
-     * @return ConfigDetailModel|null
+     * @return ConfigDetailModel
+     * @throws NacosException
      */
     public function historyDetail(string $nid): ?ConfigDetailModel
     {
@@ -137,9 +148,12 @@ class ConfigApi extends BaseApi
                     'nid' => $nid,
                 ],
             ]);
-        } catch (ServerException $e) {
-            // 不存在时
-            return null;
+        } catch (NacosException $e) {
+            if ($e->getCode() === NacosResponseCode::SERVER_ERROR && strpos($e->getMessage(), 'caused: Incorrect result size: expected 1, actual 0') === 0) {
+                // 不存在时
+                return null;
+            }
+            throw $e;
         }
         return new ConfigDetailModel($result);
     }
@@ -148,6 +162,7 @@ class ConfigApi extends BaseApi
      * 查询配置上一版本信息(1.4起)
      * @param string $id 配置ID
      * @return ConfigDetailModel
+     * @throws NacosException
      * @internal 接口存在问题，未完成
      */
     public function historyPrevious(string $id): ConfigDetailModel

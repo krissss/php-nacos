@@ -2,6 +2,7 @@
 
 namespace Kriss\Nacos\DTO\Request;
 
+use Kriss\Nacos\Model\InstanceModel;
 use Kriss\Nacos\Support\Json;
 
 class InstanceParams
@@ -67,6 +68,24 @@ class InstanceParams
         $this->ip = $ip;
         $this->port = $port;
         $this->serviceName = $serviceName;
+    }
+
+    /**
+     * @param InstanceModel $service
+     * @return static
+     */
+    public static function loadFromInstanceModel(InstanceModel $instance): self
+    {
+        return (new static($instance->ip, $instance->port, $instance->serviceName))
+            ->setServiceName($instance->serviceName)
+            ->setNamespaceId($instance->namespaceId)
+            ->setWeight($instance->weight)
+            ->setEnabled($instance->enabled)
+            ->setHealthy($instance->healthy)
+            ->setMetadata($instance->metadata)
+            ->setClusterName($instance->clusterName)
+            ->setGroupName($instance->groupName)
+            ->setEphemeral($instance->ephemeral);
     }
 
     /**

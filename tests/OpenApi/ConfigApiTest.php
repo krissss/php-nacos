@@ -7,25 +7,23 @@ use Kriss\Nacos\DTO\Request\PageParams;
 use Kriss\Nacos\DTO\Response\ConfigDetailModel;
 use Kriss\Nacos\DTO\Response\PaginationModel;
 use Kriss\Nacos\OpenApi\ConfigApi;
-use Kriss\Nacos\Tests\Mocks\Traits\NacosTrait;
-use Kriss\Nacos\Tests\Mocks\Traits\TestsConfigTrait;
+use Kriss\Nacos\Tests\Mocks\Traits\TestSupportTrait;
 use PHPUnit\Framework\TestCase;
 
 class ConfigApiTest extends TestCase
 {
-    use NacosTrait;
-    use TestsConfigTrait;
+    use TestSupportTrait;
 
     protected $api;
 
     protected function setUp()
     {
-        $this->api = new ConfigApi($this->getNacos());
+        $this->api = $this->getNacos()->get(ConfigApi::class);
     }
 
     public function testHistoryList()
     {
-        $dataId = $this->getTestsConfig('create_config_data_id');
+        $dataId = $this->getTestConfig('create_config_data_id');
 
         // 发布一个配置，取最新的
         $this->api->publish(new ConfigParams($dataId), 'aaaa', 'txt');
@@ -42,7 +40,7 @@ class ConfigApiTest extends TestCase
 
     public function testDelete()
     {
-        $dataId = $this->getTestsConfig('create_config_data_id');
+        $dataId = $this->getTestConfig('create_config_data_id');
 
         $this->api->publish(new ConfigParams($dataId), 'aaaa', 'txt');
         $data = $this->api->delete(new ConfigParams($dataId));
@@ -51,7 +49,7 @@ class ConfigApiTest extends TestCase
 
     public function testHistoryDetail()
     {
-        $dataId = $this->getTestsConfig('create_config_data_id');
+        $dataId = $this->getTestConfig('create_config_data_id');
 
         $data = $this->api->historyList(new ConfigParams($dataId), new PageParams());
         /** @var ConfigDetailModel[] $configs */
@@ -67,7 +65,7 @@ class ConfigApiTest extends TestCase
     public function __testHistoryPrevious()
     {
         // 接口问题
-//        $dataId = $this->getTestsConfig('create_config_data_id');
+//        $dataId = $this->getTestConfig('create_config_data_id');
 //
 //        $content1 = 'test_previous1:' . time();
 //        $this->api->publish(new ConfigParams($dataId), $content1, 'txt');
@@ -90,7 +88,7 @@ class ConfigApiTest extends TestCase
 
     public function testPublish()
     {
-        $dataId = $this->getTestsConfig('create_config_data_id');
+        $dataId = $this->getTestConfig('create_config_data_id');
 
         $content = 'test_publish_' . time();
         $data = $this->api->publish(new ConfigParams($dataId), $content, 'txt');

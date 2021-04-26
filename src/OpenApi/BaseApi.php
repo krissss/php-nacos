@@ -2,12 +2,11 @@
 
 namespace Kriss\Nacos\OpenApi;
 
-use Kriss\Nacos\Enums\ServerResponseCode;
-use Kriss\Nacos\Exceptions\ServerException;
-use Kriss\Nacos\Nacos;
-use Kriss\Nacos\Support\AccessToken;
-use Symfony\Component\HttpClient\Exception\JsonException;
-use Symfony\Component\HttpClient\HttpClient;
+use Kriss\Nacos\Contract\ConfigRepositoryInterface;
+use Kriss\Nacos\Contract\HttpClientInterface;
+use Kriss\Nacos\Exceptions\NacosException;
+use Kriss\Nacos\NacosContainer;
+use Kriss\Nacos\Service\AuthService;
 
 /**
  * @link https://nacos.io/zh-cn/docs/open-api.html
@@ -15,72 +14,53 @@ use Symfony\Component\HttpClient\HttpClient;
 abstract class BaseApi
 {
     /**
-     * @var Nacos
+     * @var NacosContainer
      */
-    private $nacos;
+    protected $container;
+    /**
+     * @var HttpClientInterface
+     */
+    protected $client;
+    /**
+     * @var ConfigRepositoryInterface
+     */
+    protected $config;
+    /**
+     * @var string
+     */
+    protected $baseUri;
 
-    public function __construct(Nacos $nacos)
+    public function __construct(NacosContainer $container)
     {
-        $this->nacos = $nacos;
+        $this->container = $container;
+        $this->config = $this->container->get(ConfigRepositoryInterface::class);
+        $this->client = $this->container->get(HttpClientInterface::class);
+        $this->baseUri = $this->config->get('nacos.api.baseUri');
     }
 
     /**
      * 接口请求
-     * @param $uri
+     * @param string $uri
      * @param array $options
      * @param string $method
-     * @return array|string
+     * @return mixed
+     * @throws NacosException
      */
-    protected function api($uri, $options = [], $method = 'GET')
+    protected function api(string $uri, array $options = [], string $method = 'GET')
     {
-        $this->nacos->log($requestParams = ['type' => 'request', 'uri' => $uri, 'options' => $options, 'method' => $method]);
-
-        $options = array_merge([
-            'max_redirects' => 0,
-        ], $options);
-
-        foreach (['query', 'body'] as $k) {
-            if (isset($options[$k])) {
-                $options[$k] = array_filter($options[$k], function ($value) {
-                    return $value !== null;
-                });
-            }
-        }
-        if ($this->nacos->config->get('auth_enabled')) {
-            $options['query']['accessToken'] = (new AccessToken($this->nacos))->get()->accessToken;
+        if ($uri !== AuthApi::LOGIN_URI && $this->config->get('nacos.api.authEnable')) {
+            $options['query']['accessToken'] = $this->container->get(AuthService::class)->getAccessToken();
         }
 
-        $response = $this->getHttpClient()->request(strtoupper($method), $this->nacos->buildUrl($uri), $options);
-        $statusCode = $response->getStatusCode();
-        $content = $response->getContent(false);
-
-        $this->nacos->log($responseData = ['type' => 'response', 'code' => $statusCode, 'content' => $content]);
-
-        if (($statusCode = $response->getStatusCode()) !== ServerResponseCode::OK) {
-            $this->nacos->log(['type' => 'response not ok', 'request' => $requestParams, 'response' => $responseData], 'warning');
-            throw new ServerException($content, $statusCode);
-        }
-
-        try {
-            return $response->toArray(false);
-        } catch (JsonException $exception) {
-            return $response->getContent(false);
-        }
+        return $this->client->sendRequest($this->buildUrl($uri), $options, $method);
     }
 
-    protected $httpClient;
-
     /**
-     * @return \Symfony\Contracts\HttpClient\HttpClientInterface
+     * @param string $uri
+     * @return string
      */
-    protected function getHttpClient()
+    protected function buildUrl(string $uri)
     {
-        if ($this->httpClient) {
-            return $this->httpClient;
-        }
-
-        $this->httpClient = HttpClient::create();
-
-        return $this->httpClient;
+        return rtrim($this->baseUri, '/') . '/' . ltrim($uri, '/');
     }
 }

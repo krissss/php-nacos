@@ -8,18 +8,18 @@ use Kriss\Nacos\DTO\Response\ServerLeaderModel;
 use Kriss\Nacos\DTO\Response\ServerModel;
 use Kriss\Nacos\DTO\Response\SwitchesModel;
 use Kriss\Nacos\OpenApi\OperatorApi;
-use Kriss\Nacos\Tests\Mocks\Traits\NacosTrait;
+use Kriss\Nacos\Tests\Mocks\Traits\TestSupportTrait;
 use PHPUnit\Framework\TestCase;
 
 class OperatorApiTest extends TestCase
 {
-    use NacosTrait;
+    use TestSupportTrait;
 
     protected $api;
 
     protected function setUp()
     {
-        $this->api = new OperatorApi($this->getNacos());
+        $this->api = $this->getNacos()->get(OperatorApi::class);
     }
 
     public function testSwitches()

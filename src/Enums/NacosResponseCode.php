@@ -2,7 +2,7 @@
 
 namespace Kriss\Nacos\Enums;
 
-class ServerResponseCode
+class NacosResponseCode
 {
     const OK = 200;
     const BAD_REQUEST = 400;

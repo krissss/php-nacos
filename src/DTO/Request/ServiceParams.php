@@ -2,6 +2,7 @@
 
 namespace Kriss\Nacos\DTO\Request;
 
+use Kriss\Nacos\Model\ServiceModel;
 use Kriss\Nacos\Support\Json;
 
 class ServiceParams
@@ -40,6 +41,20 @@ class ServiceParams
     public function __construct(string $serviceName)
     {
         $this->serviceName = $serviceName;
+    }
+
+    /**
+     * @param ServiceModel $service
+     * @return static
+     */
+    public static function loadFromServiceModel(ServiceModel $service): self
+    {
+        return (new static($service->serviceName))
+            ->setNamespaceId($service->namespaceId)
+            ->setGroupName($service->groupName)
+            ->setProtectThreshold($service->protectThreshold)
+            ->setMetadata($service->metadata)
+            ->setSelector($service->selector);
     }
 
     /**

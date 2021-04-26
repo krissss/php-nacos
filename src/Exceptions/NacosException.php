@@ -2,10 +2,10 @@
 
 namespace Kriss\Nacos\Exceptions;
 
-use Exception;
+use RuntimeException;
 use Throwable;
 
-class ServerException extends Exception
+class NacosException extends RuntimeException
 {
     public function __construct($message = "", $code = 0, Throwable $previous = null)
     {

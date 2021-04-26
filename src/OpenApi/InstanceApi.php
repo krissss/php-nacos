@@ -6,7 +6,8 @@ use Kriss\Nacos\DTO\Request\InstanceBeatParams;
 use Kriss\Nacos\DTO\Request\InstanceParams;
 use Kriss\Nacos\DTO\Response\InstanceBeatModel;
 use Kriss\Nacos\DTO\Response\InstanceDetailModel;
-use Kriss\Nacos\Exceptions\ServerException;
+use Kriss\Nacos\Enums\NacosResponseCode;
+use Kriss\Nacos\Exceptions\NacosException;
 
 /**
  * 服务实例
@@ -17,6 +18,7 @@ class InstanceApi extends BaseApi
      * 注册实例
      * @param InstanceParams $params
      * @return bool
+     * @throws NacosException
      */
     public function register(InstanceParams $params): bool
     {
@@ -42,6 +44,7 @@ class InstanceApi extends BaseApi
      * 注销实例
      * @param InstanceParams $params
      * @return bool
+     * @throws NacosException
      */
     public function unregister(InstanceParams $params): bool
     {
@@ -63,6 +66,7 @@ class InstanceApi extends BaseApi
      * 修改实例
      * @param InstanceParams $params
      * @return bool
+     * @throws NacosException
      */
     public function modify(InstanceParams $params): bool
     {
@@ -88,6 +92,7 @@ class InstanceApi extends BaseApi
      * @param InstanceParams $params
      * @param bool $healthyOnly
      * @return InstanceDetailModel|null
+     * @throws NacosException
      */
     public function detail(InstanceParams $params, bool $healthyOnly = false): ?InstanceDetailModel
     {
@@ -104,8 +109,11 @@ class InstanceApi extends BaseApi
                     'ephemeral' => $params->getEphemeral(),
                 ],
             ]);
-        } catch (ServerException $e) {
-            return null;
+        } catch (NacosException $e) {
+            if ($e->getCode() === NacosResponseCode::SERVER_ERROR && strpos($e->getMessage(), 'caused: no ips found for cluster DEFAULT in service') === 0) {
+                return null;
+            }
+            throw $e;
         }
         return new InstanceDetailModel($result);
     }
@@ -114,6 +122,7 @@ class InstanceApi extends BaseApi
      * 发送实例心跳
      * @param InstanceBeatParams $params
      * @return InstanceBeatModel
+     * @throws NacosException
      */
     public function beat(InstanceBeatParams $params): InstanceBeatModel
     {
@@ -132,7 +141,7 @@ class InstanceApi extends BaseApi
      * 更新实例的健康状态
      * @param InstanceParams $params
      * @return bool
-     * @throws ServerException
+     * @throws NacosException
      */
     public function modifyHealth(InstanceParams $params): bool
     {

@@ -4,26 +4,24 @@ namespace Kriss\Nacos\Tests\OpenApi;
 
 use Kriss\Nacos\DTO\Request\NamespaceParams;
 use Kriss\Nacos\OpenApi\NamespaceApi;
-use Kriss\Nacos\Tests\Mocks\Traits\NacosTrait;
-use Kriss\Nacos\Tests\Mocks\Traits\TestsConfigTrait;
+use Kriss\Nacos\Tests\Mocks\Traits\TestSupportTrait;
 use PHPUnit\Framework\TestCase;
 
 class NamespaceApiTest extends TestCase
 {
-    use NacosTrait;
-    use TestsConfigTrait;
+    use TestSupportTrait;
 
     protected $api;
 
     protected function setUp()
     {
-        $this->api = new NamespaceApi($this->getNacos());
+        $this->api = $this->getNacos()->get(NamespaceApi::class);
     }
 
     public function testList()
     {
-        $id = $this->getTestsConfig('exist_namespaces_id');
-        $name = $this->getTestsConfig('exist_namespaces_name');
+        $id = $this->getTestConfig('exist_namespaces_id');
+        $name = $this->getTestConfig('exist_namespaces_name');
 
         $data = $this->api->list();
         $has = false;
@@ -39,7 +37,7 @@ class NamespaceApiTest extends TestCase
 
     public function testDelete()
     {
-        $nsId = $this->getTestsConfig('create_namespace_id');
+        $nsId = $this->getTestConfig('create_namespace_id');
 
         $data = $this->api->delete($nsId);
         $this->assertEquals(true, $data);
@@ -47,8 +45,8 @@ class NamespaceApiTest extends TestCase
 
     public function testCreate()
     {
-        $nsId = $this->getTestsConfig('create_namespace_id');
-        $nsName = $this->getTestsConfig('create_namespace_name');
+        $nsId = $this->getTestConfig('create_namespace_id');
+        $nsName = $this->getTestConfig('create_namespace_name');
 
         // 新增
         $data = $this->api->create(new NamespaceParams($nsId, $nsName));
@@ -69,8 +67,8 @@ class NamespaceApiTest extends TestCase
 
     public function testModify()
     {
-        $nsId = $this->getTestsConfig('create_namespace_id');
-        $nsName = $this->getTestsConfig('create_namespace_name');
+        $nsId = $this->getTestConfig('create_namespace_id');
+        $nsName = $this->getTestConfig('create_namespace_name');
         $nsDesc = 'desc';
 
         // 新增

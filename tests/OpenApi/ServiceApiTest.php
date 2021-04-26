@@ -8,25 +8,23 @@ use Kriss\Nacos\DTO\Response\Service\ServiceHostModel;
 use Kriss\Nacos\DTO\Response\ServiceInstanceListModel;
 use Kriss\Nacos\DTO\Response\ServiceListModel;
 use Kriss\Nacos\OpenApi\ServiceApi;
-use Kriss\Nacos\Tests\Mocks\Traits\NacosTrait;
-use Kriss\Nacos\Tests\Mocks\Traits\TestsConfigTrait;
+use Kriss\Nacos\Tests\Mocks\Traits\TestSupportTrait;
 use PHPUnit\Framework\TestCase;
 
 class ServiceApiTest extends TestCase
 {
-    use NacosTrait;
-    use TestsConfigTrait;
+    use TestSupportTrait;
 
     protected $api;
 
     protected function setUp()
     {
-        $this->api = new ServiceApi($this->getNacos());
+        $this->api = $this->getNacos()->get(ServiceApi::class);
     }
 
     public function testInstanceList()
     {
-        $serviceName = $this->getTestsConfig('exist_service_name');
+        $serviceName = $this->getTestConfig('exist_service_name');
 
         $list = $this->api->instanceList(new ServiceParams($serviceName));
         $this->assertInstanceOf(ServiceInstanceListModel::class, $list);
@@ -41,7 +39,7 @@ class ServiceApiTest extends TestCase
 
     public function testDelete()
     {
-        $serviceName = $this->getTestsConfig('create_service_name');
+        $serviceName = $this->getTestConfig('create_service_name');
 
         $data = $this->api->delete(new ServiceParams($serviceName));
         $this->assertEquals(false, $data);
@@ -49,8 +47,8 @@ class ServiceApiTest extends TestCase
 
     public function testCreate()
     {
-        $serviceName = $this->getTestsConfig('create_service_name');
-        $existNsId = $this->getTestsConfig('exist_namespaces_id');
+        $serviceName = $this->getTestConfig('create_service_name');
+        $existNsId = $this->getTestConfig('exist_namespaces_id');
 
         // 简单创建
         $data = $this->api->create(new ServiceParams($serviceName));
@@ -80,8 +78,8 @@ class ServiceApiTest extends TestCase
 
     public function testModify()
     {
-        $serviceName = $this->getTestsConfig('create_service_name');
-        $existNsId = $this->getTestsConfig('exist_namespaces_id');
+        $serviceName = $this->getTestConfig('create_service_name');
+        $existNsId = $this->getTestConfig('exist_namespaces_id');
 
         // 创建
         $this->api->create(new ServiceParams($serviceName));
@@ -108,13 +106,17 @@ class ServiceApiTest extends TestCase
 
     public function testDetail()
     {
-        $serviceName = $this->getTestsConfig('exist_service_name');
+        $serviceName = $this->getTestConfig('exist_service_name');
 
         $detail = $this->api->detail(new ServiceParams($serviceName));
         $this->assertEquals($serviceName, $detail->name);
         $this->assertEquals('DEFAULT_GROUP', $detail->groupName);
         $this->assertEquals([], $detail->metadata);
         $this->assertEquals('public', $detail->namespaceId);
+
+        // 不存在的服务
+        $detail = $this->api->detail(new ServiceParams('not_exist_service'));
+        $this->assertEquals(null, $detail);
     }
 
     public function testList()
