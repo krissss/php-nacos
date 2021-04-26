@@ -22,7 +22,7 @@ trait TestSupportTrait
     protected function getNacos()
     {
         if (!$this->nacos) {
-            $container = NacosContainer::getInstance();
+            $container = new NacosContainer();
 
             // configRepository
             $configRepository = new MemoryConfigRepository(require __DIR__ . '/nacos_config.php', []);
