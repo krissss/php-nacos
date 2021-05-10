@@ -110,7 +110,12 @@ class InstanceApi extends BaseApi
                 ],
             ]);
         } catch (NacosException $e) {
-            if ($e->getCode() === NacosResponseCode::SERVER_ERROR && strpos($e->getMessage(), 'caused: no ips found for cluster DEFAULT in service') === 0) {
+            // 实例不存在
+            if ($e->getCode() === NacosResponseCode::SERVER_ERROR && strpos($e->getMessage(), 'caused: no ips found for cluster') === 0) {
+                return null;
+            }
+            // 服务不存在
+            if ($e->getCode() === NacosResponseCode::SERVER_ERROR && strpos($e->getMessage(), 'caused: no service') === 0) {
                 return null;
             }
             throw $e;
@@ -119,7 +124,7 @@ class InstanceApi extends BaseApi
     }
 
     /**
-     * 发送实例心跳
+     * 发送实例心跳，当服务和实例不存在时会自动创建
      * @param InstanceBeatParams $params
      * @return InstanceBeatModel
      * @throws NacosException

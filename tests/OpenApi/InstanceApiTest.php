@@ -76,6 +76,15 @@ class InstanceApiTest extends TestCase
         $data = $this->api->beat(new InstanceBeatParams($this->serviceName, InstanceBeatJson::fromInstanceDetailModel($detail)));
         $this->assertInstanceOf(InstanceBeatModel::class, $data);
         $this->assertEquals(true, $data->lightBeatEnabled);
+        $this->assertIsInt($data->clientBeatInterval);
+
+        // 不存在的实例自动创建
+        $data = $this->api->beat((new InstanceBeatParams('not_exist_service', new InstanceBeatJson('127.0.0.1', '21251', 'not_exist_service')))->setEphemeral(false));
+        $this->assertInstanceOf(InstanceBeatModel::class, $data);
+        $detail = $this->api->detail(new InstanceParams('127.0.0.1', '21251', 'not_exist_service'));
+        $this->assertInstanceOf(InstanceDetailModel::class, $detail);
+        // 清理
+        $this->serviceApi->delete(new ServiceParams('not_exist_service'));
     }
 
     public function testUnregister()
@@ -104,8 +113,12 @@ class InstanceApiTest extends TestCase
         $this->assertIsFloat($detail->weight);
         $this->assertIsString($detail->service);
 
-        $this->api->unregister($this->instanceParams);
         // 实例不存在时
+        $this->api->unregister($this->instanceParams);
+        $detail = $this->api->detail($this->instanceParams);
+        $this->assertEquals(null, $detail);
+        // 服务不存在时
+        $this->serviceApi->delete(new ServiceParams($this->serviceName));
         $detail = $this->api->detail($this->instanceParams);
         $this->assertEquals(null, $detail);
     }
