@@ -88,3 +88,7 @@ $instanceService->deregister();
 
 修改已有的服务或组件，通过覆盖原 API 或 Service，然后在容器中注入新的即可，比如： 想要修改 ConfigApi，只需要新建一个类，比如 `MyConfigApi extend ConfigApi`，然后在配置
 container 时加入：`$container->add(ConfigApi::class, MyConfigApi::class)`
+
+## 例子
+
+[Laravel](./examples/laravel)
