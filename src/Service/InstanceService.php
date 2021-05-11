@@ -101,7 +101,7 @@ class InstanceService
             try {
                 $data = $this->beatOne();
                 echo date('Y-m-d H:i:s') . ': beat' . PHP_EOL;
-                usleep($data->clientBeatInterval);
+                usleep($data->clientBeatInterval * 1000);
             } catch (RuntimeException $e) {
                 echo date('Y-m-d H:i:s') . ': beat err: ' . $e->getMessage() . PHP_EOL;
                 echo date('Y-m-d H:i:s') . ': retry: ' . $retryCount . PHP_EOL;
