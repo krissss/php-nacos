@@ -10,6 +10,6 @@
 
 4. 使用
 
-    - 注册实例注册例子：`App\Console\Commands\Nacos\InstanceCommand`
+    - 服务实例操作例子：`App\Console\Commands\Nacos\InstanceCommand`
     
-    - 监听配置例子：`App\Console\Commands\Nacos\ConfigCommand`
+    - 配置操作例子：`App\Console\Commands\Nacos\ConfigCommand`
