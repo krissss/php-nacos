@@ -80,6 +80,4 @@ class HttpClient implements HttpClientInterface
         }
         $this->logger->log($level, $messages, ['from' => __CLASS__]);
     }
-
-
 }
