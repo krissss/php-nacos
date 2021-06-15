@@ -7,6 +7,7 @@ use Kriss\Nacos\DTO\Request\InstanceParams;
 use Kriss\Nacos\DTO\Request\ServiceParams;
 use Kriss\Nacos\DTO\Response\InstanceBeatModel;
 use Kriss\Nacos\DTO\Response\InstanceDetailModel;
+use Kriss\Nacos\DTO\Response\Service\ServiceHostModel;
 use Kriss\Nacos\DTO\Response\ServiceDetailModel;
 use Kriss\Nacos\OpenApi\InstanceApi;
 use Kriss\Nacos\OpenApi\ServiceApi;
@@ -84,5 +85,16 @@ class InstanceServiceTest extends TestCase
         // 测试结束清除服务
         $this->service->deregister();
         $this->getNacos()->get(ServiceApi::class)->delete(new ServiceParams($this->config->get('nacos.service.serviceName')));
+    }
+
+    public function testGetOptimal()
+    {
+        // 测试实例不存在时
+        $serviceHost = $this->service->getOptimal(new ServiceParams('not-exist-service-name-22222'));
+        $this->assertEquals(false, $serviceHost);
+
+        // 实例存在时
+        $serviceHost = $this->service->getOptimal(new ServiceParams($this->getTestConfig('exist_service_name')));
+        $this->assertInstanceOf(ServiceHostModel::class, $serviceHost);
     }
 }

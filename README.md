@@ -11,8 +11,10 @@
 ```php
 use Kriss\Nacos\Contract\ConfigRepositoryInterface;
 use Kriss\Nacos\Contract\HttpClientInterface;
+use Kriss\Nacos\Contract\LoadBalancerManagerInterface;
 use Kriss\Nacos\NacosContainer;
 use Kriss\Nacos\Support\HttpClient;
+use Kriss\Nacos\Support\LoadBalancerManager;
 use Psr\SimpleCache\CacheInterface;
 
 $container = new NacosContainer();
@@ -38,6 +40,10 @@ $cachePool = new FilesystemCachePool($filesystem);
 $simpleCache = new SimpleCacheBridge($cachePool);*/
 /** @var CacheInterface $simpleCache */
 $container->add(CacheInterface::class, $simpleCache);
+
+// 在使用 InstanceService::getOptimal 时需要 loadBalancer
+$loadBalancer = new LoadBalancerManager();
+$container->add(LoadBalancerManagerInterface::class, $loadBalancer);
 ```
 
 ## 使用

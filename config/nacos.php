@@ -1,6 +1,10 @@
 <?php
 
 return [
+    // 负载均衡策略
+    'load_balancer' => [
+        'default' => 'weighted-random',
+    ],
     // API 接口参数
     'api' => [
         'baseUri' => 'http://127.0.0.1:8848',

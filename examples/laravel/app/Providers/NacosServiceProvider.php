@@ -6,8 +6,10 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\ServiceProvider;
 use Kriss\Nacos\Contract\ConfigRepositoryInterface;
 use Kriss\Nacos\Contract\HttpClientInterface;
+use Kriss\Nacos\Contract\LoadBalancerManagerInterface;
 use Kriss\Nacos\NacosContainer;
 use Kriss\Nacos\Support\HttpClient;
+use Kriss\Nacos\Support\LoadBalancerManager;
 use Kriss\Nacos\Support\MemoryConfigRepository;
 use Psr\SimpleCache\CacheInterface;
 
@@ -36,6 +38,10 @@ class NacosServiceProvider extends ServiceProvider
 
             // 在使用 nacos 授权访问时，需要注入 Psr16 的 Cache 组件，用于缓存 nacos 的令牌
             $container->add(CacheInterface::class, $app['cache']);
+
+            // 在使用 InstanceService::getOptimal 时需要 loadBalancer
+            $loadBalancer = new LoadBalancerManager();
+            $container->add(LoadBalancerManagerInterface::class, $loadBalancer);
 
             return $container;
         });

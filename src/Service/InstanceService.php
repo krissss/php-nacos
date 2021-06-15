@@ -2,11 +2,14 @@
 
 namespace Kriss\Nacos\Service;
 
+use Kriss\Nacos\Contract\ConfigRepositoryInterface;
+use Kriss\Nacos\Contract\LoadBalancerManagerInterface;
 use Kriss\Nacos\DTO\Request\InstanceBeatJson;
 use Kriss\Nacos\DTO\Request\InstanceBeatParams;
 use Kriss\Nacos\DTO\Request\InstanceParams;
 use Kriss\Nacos\DTO\Request\ServiceParams;
 use Kriss\Nacos\DTO\Response\InstanceBeatModel;
+use Kriss\Nacos\DTO\Response\Service\ServiceHostModel;
 use Kriss\Nacos\Instance;
 use Kriss\Nacos\NacosContainer;
 use Kriss\Nacos\OpenApi\InstanceApi;
@@ -108,5 +111,47 @@ class InstanceService
                 $this->registerAndBeat($retryCount - 1);
             }
         }
+    }
+
+    /**
+     * 获取最优实例
+     * @param ServiceParams $params
+     * @param array $clusters
+     * @return false|ServiceHostModel
+     */
+    public function getOptimal(ServiceParams $params, array $clusters = [])
+    {
+        $config = $this->container->get(ConfigRepositoryInterface::class);
+        $serviceApi = $this->container->get(ServiceApi::class);
+        $list = $serviceApi->instanceList($params, $clusters, true);
+        if (!$list->hosts) {
+            return false;
+        }
+        $instances = array_filter($list->hosts, function (ServiceHostModel $item) {
+            return $item->enabled && $item->healthy;
+        });
+        $tactics = strtolower($config->get('nacos.load_balancer.default', 'weighted-random'));
+        return $this->loadBalancer($instances, $tactics);
+    }
+
+    /**
+     * @param array|ServiceHostModel[] $nodes
+     * @param string $strategy
+     * @return ServiceHostModel
+     */
+    protected function loadBalancer(array $nodes, string $strategy): ServiceHostModel
+    {
+        $loadNodes = [];
+        $nacosNodes = [];
+        foreach ($nodes as $node) {
+            $key = sprintf('%s:%d', $node->ip, $node->port);
+            $loadNodes[$key] = $node->weight;
+            $nacosNodes[$key] = $node;
+        }
+
+        $loadBalancerManager = $this->container->get(LoadBalancerManagerInterface::class);
+        $loadBalancer = $loadBalancerManager->getByName($strategy);
+        $loadBalancer->setNodes($loadNodes);
+        return $nacosNodes[$loadBalancer->select()];
     }
 }
