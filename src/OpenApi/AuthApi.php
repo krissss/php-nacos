@@ -6,7 +6,7 @@ use Kriss\Nacos\DTO\Response\AccessTokenModel;
 
 class AuthApi extends BaseApi
 {
-    const LOGIN_URI = '/nacos/v1/auth/login';
+    const LOGIN_URI = '/v1/auth/login';
 
     protected $config;
     protected $cache;

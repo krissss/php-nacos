@@ -71,7 +71,7 @@ class InstanceParams
     }
 
     /**
-     * @param InstanceModel $service
+     * @param InstanceModel $instance
      * @return static
      */
     public static function loadFromInstanceModel(InstanceModel $instance): self

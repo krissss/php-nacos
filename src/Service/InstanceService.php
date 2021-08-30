@@ -92,25 +92,38 @@ class InstanceService
     /**
      * 注册并触发心跳
      */
-    public function registerAndBeat($retryCount = 5)
+    public function registerAndBeat($retryCount = 5, $isRetry = false)
     {
-        $this->register();
-
-        if ($retryCount <= 0) {
-            echo date('Y-m-d H:i:s') . ': beat over' . PHP_EOL;
+        if (!$isRetry) {
+            $is = $this->register();
+            if ($is === false) {
+                return false;
+            }
+            $this->beatLog('注册成功，等待10秒后开启心跳');
+            sleep(10);
         }
 
+        if ($retryCount <= 0) {
+            $this->beatLog('beat over with error');
+            return false;
+        }
         while (true) {
             try {
                 $data = $this->beatOne();
-                echo date('Y-m-d H:i:s') . ': beat' . PHP_EOL;
+                $this->beatLog('beat');
                 usleep($data->clientBeatInterval * 1000);
             } catch (RuntimeException $e) {
-                echo date('Y-m-d H:i:s') . ': beat err: ' . $e->getMessage() . PHP_EOL;
-                echo date('Y-m-d H:i:s') . ': retry: ' . $retryCount . PHP_EOL;
-                $this->registerAndBeat($retryCount - 1);
+                $this->beatLog('beat err: ' . $e->getMessage());
+                $this->beatLog('retry: ' . $retryCount);
+                sleep(1);
+                return $this->registerAndBeat($retryCount - 1, true);
             }
         }
+    }
+
+    private function beatLog($msg)
+    {
+        echo date('Y-m-d H:i:s') . ': ' . $msg . PHP_EOL;
     }
 
     /**

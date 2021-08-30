@@ -18,7 +18,7 @@ class NamespaceApi extends BaseApi
      */
     public function list(): array
     {
-        $result = $this->api('/nacos/v1/console/namespaces');
+        $result = $this->api('/v1/console/namespaces');
         $list = [];
         if (isset($result['data'])) {
             foreach ($result['data'] as $item) {
@@ -36,7 +36,7 @@ class NamespaceApi extends BaseApi
      */
     public function create(NamespaceParams $params): bool
     {
-        $result = $this->api('/nacos/v1/console/namespaces', [
+        $result = $this->api('/v1/console/namespaces', [
             'body' => [
                 'customNamespaceId' => $params->getCustomNamespaceId(),
                 'namespaceName' => $params->getNamespaceName(),
@@ -54,7 +54,7 @@ class NamespaceApi extends BaseApi
      */
     public function modify(NamespaceParams $params): bool
     {
-        $result = $this->api('/nacos/v1/console/namespaces', [
+        $result = $this->api('/v1/console/namespaces', [
             'body' => [
                 'namespace' => $params->getCustomNamespaceId(),
                 'namespaceShowName' => $params->getNamespaceName(),
@@ -73,7 +73,7 @@ class NamespaceApi extends BaseApi
      */
     public function delete(string $namespaceId): bool
     {
-        $result = $this->api('/nacos/v1/console/namespaces', [
+        $result = $this->api('/v1/console/namespaces', [
             'body' => [
                 'namespaceId' => $namespaceId,
             ],

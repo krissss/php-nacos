@@ -21,7 +21,7 @@ class OperatorApi extends BaseApi
      */
     public function switches(): SwitchesModel
     {
-        $result = $this->api('/nacos/v1/ns/operator/switches');
+        $result = $this->api('/v1/ns/operator/switches');
         return new SwitchesModel($result);
     }
 
@@ -33,7 +33,7 @@ class OperatorApi extends BaseApi
      */
     public function switchModify(SwitchParams $params): bool
     {
-        $result = $this->api('/nacos/v1/ns/operator/switches', [
+        $result = $this->api('/v1/ns/operator/switches', [
             'query' => [
                 'entry' => $params->getEntry(),
                 'value' => $params->getValue(),
@@ -50,7 +50,7 @@ class OperatorApi extends BaseApi
      */
     public function metrics(): MetricsModel
     {
-        $result = $this->api('/nacos/v1/ns/operator/metrics');
+        $result = $this->api('/v1/ns/operator/metrics');
         return new MetricsModel($result);
     }
 
@@ -62,7 +62,7 @@ class OperatorApi extends BaseApi
      */
     public function servers(bool $healthy = null): array
     {
-        $result = $this->api('/nacos/v1/ns/operator/servers', [
+        $result = $this->api('/v1/ns/operator/servers', [
             'query' => [
                 'healthy' => $healthy,
             ]
@@ -83,7 +83,7 @@ class OperatorApi extends BaseApi
      */
     public function currentServerLoader(): ?ServerLeaderModel
     {
-        $result = $this->api('/nacos/v1/ns/raft/leader');
+        $result = $this->api('/v1/ns/raft/leader');
         if (isset($result['leader'])) {
             return new ServerLeaderModel($result['leader']);
         }

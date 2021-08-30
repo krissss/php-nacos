@@ -22,7 +22,7 @@ class InstanceApi extends BaseApi
      */
     public function register(InstanceParams $params): bool
     {
-        $result = $this->api('/nacos/v1/ns/instance', [
+        $result = $this->api('/v1/ns/instance', [
             'query' => [
                 'ip' => $params->getIp(),
                 'port' => $params->getPort(),
@@ -48,7 +48,7 @@ class InstanceApi extends BaseApi
      */
     public function unregister(InstanceParams $params): bool
     {
-        $result = $this->api('/nacos/v1/ns/instance', [
+        $result = $this->api('/v1/ns/instance', [
             'query' => [
                 'serviceName' => $params->getServiceName(),
                 'groupName' => $params->getGroupName(),
@@ -70,7 +70,7 @@ class InstanceApi extends BaseApi
      */
     public function modify(InstanceParams $params): bool
     {
-        $result = $this->api('/nacos/v1/ns/instance', [
+        $result = $this->api('/v1/ns/instance', [
             'query' => [
                 'serviceName' => $params->getServiceName(),
                 'groupName' => $params->getGroupName(),
@@ -97,7 +97,7 @@ class InstanceApi extends BaseApi
     public function detail(InstanceParams $params, bool $healthyOnly = false): ?InstanceDetailModel
     {
         try {
-            $result = $this->api('/nacos/v1/ns/instance', [
+            $result = $this->api('/v1/ns/instance', [
                 'query' => [
                     'serviceName' => $params->getServiceName(),
                     'groupName' => $params->getGroupName(),
@@ -131,7 +131,7 @@ class InstanceApi extends BaseApi
      */
     public function beat(InstanceBeatParams $params): InstanceBeatModel
     {
-        $result = $this->api('/nacos/v1/ns/instance/beat', [
+        $result = $this->api('/v1/ns/instance/beat', [
             'query' => [
                 'serviceName' => $params->getServiceName(),
                 'groupName' => $params->getGroupName(),
@@ -150,7 +150,7 @@ class InstanceApi extends BaseApi
      */
     public function modifyHealth(InstanceParams $params): bool
     {
-        $result = $this->api('/nacos/v1/ns/health/instance', [
+        $result = $this->api('/v1/ns/health/instance', [
             'query' => [
                 'namespaceId' => $params->getNamespaceId(),
                 'serviceName' => $params->getServiceName(),

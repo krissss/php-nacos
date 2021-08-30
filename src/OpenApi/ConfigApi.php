@@ -23,7 +23,7 @@ class ConfigApi extends BaseApi
     public function get(ConfigParams $params): ?string
     {
         try {
-            return $this->api('/nacos/v1/cs/configs', [
+            return $this->api('/v1/cs/configs', [
                 'query' => [
                     'tenant' => $params->getTenant(),
                     'dataId' => $params->getDataId(),
@@ -54,7 +54,7 @@ class ConfigApi extends BaseApi
             $listeningConfigs .= "^2{$params->getTenant()}";
         }
         $listeningConfigs .= '^1';
-        return $this->api('/nacos/v1/cs/configs/listener', [
+        return $this->api('/v1/cs/configs/listener', [
             'body' => [
                 'Listening-Configs' => $listeningConfigs,
             ],
@@ -74,7 +74,7 @@ class ConfigApi extends BaseApi
      */
     public function publish(ConfigParams $params, string $content, string $type = null): bool
     {
-        $result = $this->api('/nacos/v1/cs/configs', [
+        $result = $this->api('/v1/cs/configs', [
             'body' => [
                 'tenant' => $params->getTenant(),
                 'dataId' => $params->getDataId(),
@@ -94,7 +94,7 @@ class ConfigApi extends BaseApi
      */
     public function delete(ConfigParams $params): bool
     {
-        $result = $this->api('/nacos/v1/cs/configs', [
+        $result = $this->api('/v1/cs/configs', [
             'query' => [
                 'tenant' => $params->getTenant(),
                 'dataId' => $params->getDataId(),
@@ -113,7 +113,7 @@ class ConfigApi extends BaseApi
      */
     public function historyList(ConfigParams $params, PageParams $page): array
     {
-        $result = $this->api('/nacos/v1/cs/history?search=accurate', [
+        $result = $this->api('/v1/cs/history?search=accurate', [
             'query' => [
                 'tenant' => $params->getTenant(),
                 'dataId' => $params->getDataId(),
@@ -143,7 +143,7 @@ class ConfigApi extends BaseApi
     public function historyDetail(string $nid): ?ConfigDetailModel
     {
         try {
-            $result = $this->api('/nacos/v1/cs/history', [
+            $result = $this->api('/v1/cs/history', [
                 'query' => [
                     'nid' => $nid,
                 ],
@@ -167,7 +167,7 @@ class ConfigApi extends BaseApi
      */
     public function historyPrevious(string $id): ConfigDetailModel
     {
-        $result = $this->api('/nacos/v1/cs/history/previous', [
+        $result = $this->api('/v1/cs/history/previous', [
             'query' => [
                 'id' => $id,
             ],

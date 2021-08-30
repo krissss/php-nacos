@@ -24,7 +24,7 @@ class ServiceApi extends BaseApi
     public function create(ServiceParams $params): bool
     {
         try {
-            $result = $this->api('/nacos/v1/ns/service', [
+            $result = $this->api('/v1/ns/service', [
                 'query' => [
                     'serviceName' => $params->getServiceName(),
                     'groupName' => $params->getGroupName(),
@@ -53,7 +53,7 @@ class ServiceApi extends BaseApi
     public function delete(ServiceParams $params): bool
     {
         try {
-            $result = $this->api('/nacos/v1/ns/service', [
+            $result = $this->api('/v1/ns/service', [
                 'query' => [
                     'serviceName' => $params->getServiceName(),
                     'groupName' => $params->getGroupName(),
@@ -79,7 +79,7 @@ class ServiceApi extends BaseApi
     public function modify(ServiceParams $params): bool
     {
         try {
-            $result = $this->api('/nacos/v1/ns/service', [
+            $result = $this->api('/v1/ns/service', [
                 'query' => [
                     'serviceName' => $params->getServiceName(),
                     'groupName' => $params->getGroupName() ?? 'DEFAULT_GROUP',
@@ -109,7 +109,7 @@ class ServiceApi extends BaseApi
      */
     public function list(PageParams $page, string $groupName = null, string $namespaceId = null): ServiceListModel
     {
-        $result = $this->api('/nacos/v1/ns/service/list', [
+        $result = $this->api('/v1/ns/service/list', [
             'query' => [
                 'pageNo' => $page->getPageNo(),
                 'pageSize' => $page->getPageSize(),
@@ -129,7 +129,7 @@ class ServiceApi extends BaseApi
     public function detail(ServiceParams $params): ?ServiceDetailModel
     {
         try {
-            $result = $this->api('/nacos/v1/ns/service', [
+            $result = $this->api('/v1/ns/service', [
                 'query' => [
                     'serviceName' => $params->getServiceName(),
                     'groupName' => $params->getGroupName(),
@@ -156,7 +156,7 @@ class ServiceApi extends BaseApi
      */
     public function instanceList(ServiceParams $params, array $clusters = [], bool $healthyOnly = false): ServiceInstanceListModel
     {
-        $result = $this->api('/nacos/v1/ns/instance/list', [
+        $result = $this->api('/v1/ns/instance/list', [
             'query' => [
                 'serviceName' => $params->getServiceName(),
                 'groupName' => $params->getGroupName(),
