@@ -26,10 +26,9 @@ class InstanceCommand extends Command
 
         if ($isOk) {
             $this->info($action . ' OK');
-        } else {
-            $this->error($action . 'ERROR');
+            return 0;
         }
-
-        return 0;
+        $this->error($action . ' ERROR');
+        return 1;
     }
 }
