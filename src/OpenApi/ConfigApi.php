@@ -136,16 +136,18 @@ class ConfigApi extends BaseApi
 
     /**
      * 查询历史版本详情
-     * @param string $nid 配置项历史版本ID
+     * @param ConfigDetailModel $params 配置项历史版本ID
      * @return ConfigDetailModel
      * @throws NacosException
      */
-    public function historyDetail(string $nid): ?ConfigDetailModel
+    public function historyDetail(ConfigDetailModel $params): ?ConfigDetailModel
     {
         try {
             $result = $this->api('/v1/cs/history', [
                 'query' => [
-                    'nid' => $nid,
+                    'nid' => $params->id,
+                    'dataId' => $params->dataId,
+                    'group' => $params->group,
                 ],
             ]);
         } catch (NacosException $e) {

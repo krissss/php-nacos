@@ -7,7 +7,7 @@ return [
     ],
     // API 接口参数
     'api' => [
-        'baseUri' => 'http://127.0.0.1:8848',
+        'baseUri' => 'http://127.0.0.1:8848/nacos',
         'authEnable' => false,
         'authUsername' => '',
         'authPassword' => '',

@@ -3,7 +3,7 @@
 namespace Kriss\Nacos\DTO\Response;
 
 /**
- * @property-read array $metadata
+ * @property-read array|null $metadata
  * @property-read string $instanceId
  * @property-read int $port
  * @property-read string $service

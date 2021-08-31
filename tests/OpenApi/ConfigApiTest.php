@@ -54,11 +54,11 @@ class ConfigApiTest extends TestCase
         $data = $this->api->historyList(new ConfigParams($dataId), new PageParams());
         /** @var ConfigDetailModel[] $configs */
         list($configs,) = $data;
-        $detail = $this->api->historyDetail($configs[0]->id);
+        $detail = $this->api->historyDetail($configs[0]);
         $this->assertInstanceOf(ConfigDetailModel::class, $detail);
         $this->assertIsString($detail->content);
         // 不存在时
-        $detail = $this->api->historyDetail(0);
+        $detail = $this->api->historyDetail(new ConfigDetailModel(['id' => 0, 'dataId' => 1, 'group' => 1]));
         $this->assertEquals(null, $detail);
     }
 
