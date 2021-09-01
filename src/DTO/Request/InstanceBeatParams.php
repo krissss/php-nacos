@@ -13,6 +13,10 @@ class InstanceBeatParams
      */
     private $groupName;
     /**
+     * @var string|null
+     */
+    private $namespaceId;
+    /**
      * @var boolean|null
      */
     private $ephemeral;
@@ -25,6 +29,20 @@ class InstanceBeatParams
     {
         $this->serviceName = $serviceName;
         $this->beat = $beat;
+    }
+
+    /**
+     * @param InstanceParams $instance
+     * @return static
+     */
+    public static function loadFromInstanceParams(InstanceParams $instance): self
+    {
+        $beatJson = new InstanceBeatJson($instance->getIp(), $instance->getPort(), $instance->getServiceName());
+        $beatJson->setWeight($instance->getWeight());
+        return (new static($instance->getServiceName(), $beatJson))
+            ->setNamespaceId($instance->getNamespaceId())
+            ->setGroupName($instance->getGroupName())
+            ->setEphemeral($instance->getEphemeral());
     }
 
     /**
@@ -60,6 +78,24 @@ class InstanceBeatParams
     public function setGroupName(?string $groupName): InstanceBeatParams
     {
         $this->groupName = $groupName;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getNamespaceId(): ?string
+    {
+        return $this->namespaceId;
+    }
+
+    /**
+     * @param string|null $namespaceId
+     * @return InstanceBeatParams
+     */
+    public function setNamespaceId(?string $namespaceId): InstanceBeatParams
+    {
+        $this->namespaceId = $namespaceId;
         return $this;
     }
 

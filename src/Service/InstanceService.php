@@ -73,20 +73,20 @@ class InstanceService
     public function beatOne(): InstanceBeatModel
     {
         if (!$this->_beatCached) {
-            $service = $this->container->get(Service::class);
             $instanceApi = $this->container->get(InstanceApi::class);
             $instanceParams = InstanceParams::loadFromInstanceModel($this->instance);
-            $serviceParams = ServiceParams::loadFromServiceModel($service);
 
-            $this->_beatCached = [$instanceApi, $instanceParams, $serviceParams];
+            $this->_beatCached = [$instanceApi, $instanceParams];
         }
-        [$instanceApi, $instanceParams, $serviceParams] = $this->_beatCached;
+        /** @var InstanceApi $instanceApi */
+        /** @var InstanceParams $instanceParams */
+        [$instanceApi, $instanceParams] = $this->_beatCached;
 
         $detail = $instanceApi->detail($instanceParams);
         if (!$detail) {
-            throw new RuntimeException("实例不存在: {$instanceParams->getIp()}:{$instanceParams->getPort()}@{$instanceParams->getServiceName()}");
+            throw new RuntimeException("实例不存在: {$instanceParams->getNamespaceId()}:{$instanceParams->getGroupName()}:{$instanceParams->getServiceName()}({$instanceParams->getNamespaceId()}:{$instanceParams->getGroupName()})");
         }
-        return $instanceApi->beat(new InstanceBeatParams($serviceParams->getServiceName(), InstanceBeatJson::fromInstanceDetailModel($detail)));
+        return $instanceApi->beat(InstanceBeatParams::loadFromInstanceParams($instanceParams));
     }
 
     /**

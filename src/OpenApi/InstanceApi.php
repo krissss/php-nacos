@@ -134,7 +134,10 @@ class InstanceApi extends BaseApi
         $result = $this->api('/v1/ns/instance/beat', [
             'query' => [
                 'serviceName' => $params->getServiceName(),
+                'ip' => $params->getBeat()->getIp(),
+                'port' => $params->getBeat()->getPort(),
                 'groupName' => $params->getGroupName(),
+                'namespaceId' => $params->getNamespaceId(),
                 'ephemeral' => $params->getEphemeral(),
                 'beat' => $params->getBeatJson(),
             ],
