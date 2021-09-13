@@ -13,11 +13,9 @@ class HttpClient implements HttpClientInterface
 {
     protected $logger;
     protected $client;
-    protected $baseUri;
 
-    public function __construct(string $baseUri, LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger)
     {
-        $this->baseUri = $baseUri;
         $this->logger = $logger;
         $this->client = \Symfony\Component\HttpClient\HttpClient::create();
     }

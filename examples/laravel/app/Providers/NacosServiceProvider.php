@@ -33,7 +33,7 @@ class NacosServiceProvider extends ServiceProvider
             // 构造一个 Httpclient 实现 HttpClientInterface，一般可以直接使用 Kriss\Nacos\Support\HttpClient
             $log = $app['log']; // 全量日志
             //$log = $app['log']->channel('nacos'); // 指定日志，可以配置 level
-            $httpClient = new HttpClient($configRepository->get('nacos.api.baseUri'), $log);
+            $httpClient = new HttpClient($log);
             $container->add(HttpClientInterface::class, $httpClient);
 
             // 在使用 nacos 授权访问时，需要注入 Psr16 的 Cache 组件，用于缓存 nacos 的令牌

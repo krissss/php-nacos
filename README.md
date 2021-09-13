@@ -25,7 +25,7 @@ $container = new NacosContainer();
 $container->add(ConfigRepositoryInterface::class, $configRepository);
 
 // 构造一个 Httpclient 实现 HttpClientInterface，一般可以直接使用 Kriss\Nacos\Support\HttpClient
-$httpClient = new HttpClient($configRepository->get('nacos.api.baseUri'), $log = new \Psr\Log\NullLogger());
+$httpClient = new HttpClient($log = new \Psr\Log\NullLogger());
 $container->add(HttpClientInterface::class, $httpClient);
 // 建议配置 log，记录完整的请求或异常的请求
 // 例如使用 monolog：
