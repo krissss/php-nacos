@@ -15,12 +15,12 @@ return [
     // 服务
     'service' => [
         // see Kriss\Nacos\Model\ServiceModel
-        'serviceName' => 'php_service',
+        'serviceName' => 'php-service',
     ],
     // 当前服务实例
     'instance' => [
         // see Kriss\Nacos\Model\InstanceModel
-        'serviceName' => 'php_service',
+        'serviceName' => 'php-service',
         'ip' => '127.0.0.1',
         'port' => 8448,
     ],
