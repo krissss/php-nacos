@@ -4,7 +4,6 @@ namespace Kriss\Nacos\Service;
 
 use Kriss\Nacos\Contract\ConfigRepositoryInterface;
 use Kriss\Nacos\Contract\LoadBalancerManagerInterface;
-use Kriss\Nacos\DTO\Request\InstanceBeatJson;
 use Kriss\Nacos\DTO\Request\InstanceBeatParams;
 use Kriss\Nacos\DTO\Request\InstanceParams;
 use Kriss\Nacos\DTO\Request\ServiceParams;
@@ -84,23 +83,33 @@ class InstanceService
 
         $detail = $instanceApi->detail($instanceParams);
         if (!$detail) {
-            throw new RuntimeException("实例不存在: {$instanceParams->getNamespaceId()}:{$instanceParams->getGroupName()}:{$instanceParams->getServiceName()}({$instanceParams->getNamespaceId()}:{$instanceParams->getGroupName()})");
+            throw new RuntimeException("instance not exist: {$instanceParams->getNamespaceId()}:{$instanceParams->getGroupName()}:{$instanceParams->getServiceName()}({$instanceParams->getNamespaceId()}:{$instanceParams->getGroupName()})");
         }
         return $instanceApi->beat(InstanceBeatParams::loadFromInstanceParams($instanceParams));
     }
 
     /**
      * 注册并触发心跳
+     * @param int $retryCount
+     * @param bool $isRetry
+     * @param array $config
+     * @return false
      */
-    public function registerAndBeat($retryCount = 5, $isRetry = false)
+    public function registerAndBeat(int $retryCount = 5, bool $isRetry = false, array $config = [])
     {
+        $config = array_merge([
+            'afterRegisterSleep' => 10,
+            'retrySleep' => 3,
+            'maxRetryCount' => $retryCount,
+        ], $config);
+
         if (!$isRetry) {
             $is = $this->register();
             if ($is === false) {
                 return false;
             }
-            $this->beatLog('注册成功，等待10秒后开启心跳');
-            sleep(10);
+            $this->beatLog("register success, beat after {$config['afterRegisterSleep']}s");
+            sleep($config['afterRegisterSleep']);
         }
 
         if ($retryCount <= 0) {
@@ -112,18 +121,20 @@ class InstanceService
                 $data = $this->beatOne();
                 $this->beatLog('beat');
                 usleep($data->clientBeatInterval * 1000);
+                $retryCount = $config['maxRetryCount'];
             } catch (RuntimeException $e) {
-                $this->beatLog('beat err: ' . $e->getMessage());
+                $this->beatLog('beat error: ' . $e->getMessage());
                 $this->beatLog('retry: ' . $retryCount);
-                sleep(1);
-                return $this->registerAndBeat($retryCount - 1, true);
+                sleep($config['retrySleep']);
+                return $this->registerAndBeat($retryCount - 1, true, $config);
             }
         }
     }
 
     private function beatLog($msg)
     {
-        echo date('Y-m-d H:i:s') . ': ' . $msg . PHP_EOL;
+        $datetime = date('Y-m-d H:i:s');
+        echo "[{$datetime}][{$this->instance->ip}:{$this->instance->port}@{$this->instance->namespaceId}:{$this->instance->groupName}:{$this->instance->serviceName}]: {$msg}" . PHP_EOL;
     }
 
     /**
