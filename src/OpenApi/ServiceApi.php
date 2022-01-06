@@ -137,7 +137,7 @@ class ServiceApi extends BaseApi
                 ],
             ]);
         } catch (NacosException $e) {
-            if ($e->getCode() === NacosResponseCode::SERVER_ERROR && strpos($e->getMessage(), 'not found!') !== false) {
+            if ($e->getCode() === NacosResponseCode::SERVER_ERROR && strpos($e->getMessage(), 'not found') !== false) {
                 // caused: service DEFAULT_GROUP@@php_service is not found!
                 // caused: service not found, namespace: f7c61ff0-3b61-4a49-aadf-71950979e66a, serviceName: DEFAULT_GROUP@@php_service;
                 return null;
