@@ -47,7 +47,7 @@ class ConfigApi extends BaseApi
      * @return string
      * @throws NacosException
      */
-    public function listen(ConfigParams $params, string $contentMD5, $longPullingTimeout = 30): string
+    public function listen(ConfigParams $params, string $contentMD5, int $longPullingTimeout = 30): string
     {
         $listeningConfigs = "{$params->getDataId()}^2{$params->getGroup()}^2{$contentMD5}";
         if ($params->getTenant()) {

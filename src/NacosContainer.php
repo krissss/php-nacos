@@ -10,7 +10,7 @@ use League\Container\ServiceProvider\ServiceProviderAggregateInterface;
 
 class NacosContainer extends Container
 {
-    protected static $instance;
+    protected static ?NacosContainer $instance = null;
 
     final public function __construct(DefinitionAggregateInterface $definitions = null, ServiceProviderAggregateInterface $providers = null, InflectorAggregateInterface $inflectors = null)
     {

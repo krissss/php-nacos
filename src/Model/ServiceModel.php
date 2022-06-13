@@ -4,34 +4,14 @@ namespace Kriss\Nacos\Model;
 
 class ServiceModel extends BaseModel
 {
-    /**
-     * @var string
-     */
-    public $serviceName;
-
-    /**
-     * @var string
-     */
-    public $groupName = 'DEFAULT_GROUP';
-
-    /**
-     * @var string
-     */
-    public $namespaceId;
-
+    public string $serviceName;
+    public string $groupName = 'DEFAULT_GROUP';
+    public ?string $namespaceId = null;
     /**
      * Between 0 to 1.
      * @var float
      */
-    public $protectThreshold = 0.0;
-
-    /**
-     * @var array
-     */
-    public $metadata;
-
-    /**
-     * @var array
-     */
-    public $selector;
+    public float $protectThreshold = 0.0;
+    public ?array $metadata = null;
+    public ?array $selector = null;
 }

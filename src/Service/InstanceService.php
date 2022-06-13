@@ -18,9 +18,9 @@ use RuntimeException;
 
 class InstanceService
 {
-    protected $container;
-    protected $instance;
-    protected $instanceApi;
+    protected NacosContainer $container;
+    protected Instance $instance;
+    protected InstanceApi $instanceApi;
 
     public function __construct(NacosContainer $container)
     {
@@ -33,7 +33,7 @@ class InstanceService
      * 注册实例
      * @return bool
      */
-    public function register()
+    public function register(): bool
     {
         $service = $this->container->get(Service::class);
         $serviceApi = $this->container->get(ServiceApi::class);
@@ -56,13 +56,13 @@ class InstanceService
      * 注销实例
      * @return bool
      */
-    public function deregister()
+    public function deregister(): bool
     {
         $instanceParams = InstanceParams::loadFromInstanceModel($this->instance);
         return $this->instanceApi->unregister($instanceParams);
     }
 
-    private $_beatCached = [];
+    private array $_beatCached = [];
 
     /**
      * 发送一次心跳
@@ -95,7 +95,7 @@ class InstanceService
      * @param array $config
      * @return false
      */
-    public function registerAndBeat(int $retryCount = 5, bool $isRetry = false, array $config = [])
+    public function registerAndBeat(int $retryCount = 5, bool $isRetry = false, array $config = []): bool
     {
         $config = array_merge([
             'afterRegisterSleep' => 10,
@@ -131,7 +131,7 @@ class InstanceService
         }
     }
 
-    private function beatLog($msg)
+    protected function beatLog($msg)
     {
         $datetime = date('Y-m-d H:i:s');
         echo "[{$datetime}][{$this->instance->ip}:{$this->instance->port}@{$this->instance->namespaceId}:{$this->instance->groupName}:{$this->instance->serviceName}]: {$msg}" . PHP_EOL;

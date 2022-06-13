@@ -11,11 +11,11 @@ use Psr\SimpleCache\CacheInterface;
 
 class AuthService
 {
-    protected $container;
-    protected $cache;
+    protected NacosContainer $container;
+    protected CacheInterface $cache;
 
-    protected $username;
-    protected $password;
+    protected ?string $username;
+    protected ?string $password;
 
     public function __construct(NacosContainer $container)
     {
@@ -45,7 +45,7 @@ class AuthService
         return $token->accessToken;
     }
 
-    protected function getCacheKey($username, $password)
+    protected function getCacheKey($username, $password): string
     {
         return 'nacos_auth_' . substr(md5($username . $password), 8, 16);
     }

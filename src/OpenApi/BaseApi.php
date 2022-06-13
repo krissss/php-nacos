@@ -16,15 +16,15 @@ abstract class BaseApi
     /**
      * @var NacosContainer
      */
-    protected $container;
+    protected NacosContainer $container;
     /**
      * @var HttpClientInterface
      */
-    protected $client;
+    protected HttpClientInterface $client;
     /**
      * @var ConfigRepositoryInterface
      */
-    protected $config;
+    protected ConfigRepositoryInterface $config;
 
     public function __construct(NacosContainer $container)
     {
@@ -54,7 +54,7 @@ abstract class BaseApi
      * @param string $uri
      * @return string
      */
-    protected function buildUrl(string $uri)
+    protected function buildUrl(string $uri): string
     {
         return rtrim($this->config->get('nacos.api.baseUri'), '/')
             . '/'

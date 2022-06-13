@@ -6,7 +6,7 @@ use Kriss\Nacos\Contract\ConfigRepositoryInterface;
 
 class MemoryConfigRepository implements ConfigRepositoryInterface
 {
-    protected $items = [];
+    protected array $items = [];
 
     public function __construct(array $nacosConfig, array $extraConfig = [])
     {

@@ -33,7 +33,7 @@ trait TestSupportTrait
             // httpclient
             $log = new Logger('test');
             $log->pushHandler(new StreamHandler(__DIR__ . '/../runtime/mock_log.log'));
-            $httpClient = new HttpClient($configRepository->get('nacos.api.baseUri'), $log);
+            $httpClient = new HttpClient($log);
             $container->add(HttpClientInterface::class, $httpClient);
 
             // cache

@@ -4,58 +4,15 @@ namespace Kriss\Nacos\Model;
 
 class InstanceModel extends BaseModel
 {
-    /**
-     * @var string
-     */
-    public $serviceName;
-
-    /**
-     * @var string
-     */
-    public $groupName = 'DEFAULT_GROUP';
-
-    /**
-     * @var string
-     */
-    public $ip;
-
-    /**
-     * @var int
-     */
-    public $port;
-
-    /**
-     * @var null|string
-     */
-    public $clusterName;
-
-    /**
-     * @var null|string
-     */
-    public $namespaceId;
-
-    /**
-     * @var null|float|float|int
-     */
-    public $weight;
-
-    /**
-     * @var null|array
-     */
-    public $metadata;
-
-    /**
-     * @var null|bool
-     */
-    public $enabled;
-
-    /**
-     * @var null|bool
-     */
-    public $ephemeral;
-
-    /**
-     * @var null|bool
-     */
-    public $healthy;
+    public string $serviceName;
+    public string $groupName = 'DEFAULT_GROUP';
+    public string $ip;
+    public int $port;
+    public ?string $clusterName = null;
+    public ?string $namespaceId = null;
+    public ?float $weight = null;
+    public ?array $metadata = null;
+    public ?bool $enabled = null;
+    public ?bool $ephemeral = null;
+    public ?bool $healthy = null;
 }

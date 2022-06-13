@@ -6,21 +6,13 @@ use Kriss\Nacos\Model\ConfigModel;
 
 class ConfigParams
 {
-    /**
-     * 配置 ID
-     * @var string
-     */
-    private $dataId;
-    /**
-     *    配置分组
-     * @var string
-     */
-    private $group;
+    private string $dataId;
+    private string $group;
     /**
      * 租户信息，对应 Naocs 的命名空间ID字段
      * @var string|null
      */
-    private $tenant;
+    private ?string $tenant = null;
 
     public function __construct(string $dataId, string $group = 'DEFAULT_GROUP')
     {
@@ -28,65 +20,40 @@ class ConfigParams
         $this->group = $group;
     }
 
-    /**
-     * @param ConfigModel $config
-     * @return static
-     */
     public static function loadFromConfigModel(ConfigModel $config): self
     {
         return (new static($config->dataId, $config->group))
             ->setTenant($config->tenant);
     }
 
-    /**
-     * @return string
-     */
     public function getDataId(): string
     {
         return $this->dataId;
     }
 
-    /**
-     * @param string $dataId
-     * @return ConfigParams
-     */
-    public function setDataId(string $dataId): ConfigParams
+    public function setDataId(string $dataId): self
     {
         $this->dataId = $dataId;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getGroup(): string
     {
         return $this->group;
     }
 
-    /**
-     * @param string $group
-     * @return ConfigParams
-     */
-    public function setGroup(string $group): ConfigParams
+    public function setGroup(string $group): self
     {
         $this->group = $group;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getTenant(): ?string
     {
         return $this->tenant;
     }
 
-    /**
-     * @param string|null $tenant
-     * @return ConfigParams
-     */
-    public function setTenant(?string $tenant): ConfigParams
+    public function setTenant(?string $tenant): self
     {
         $this->tenant = $tenant;
         return $this;

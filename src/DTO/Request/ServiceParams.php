@@ -11,42 +11,38 @@ class ServiceParams
      * 服务名
      * @var string
      */
-    private $serviceName;
+    private string $serviceName;
     /**
      * 分组名
      * @var string|null
      */
-    private $groupName;
+    private ?string $groupName = null;
     /**
      * 命名空间ID
      * @var string|null
      */
-    private $namespaceId;
+    private ?string $namespaceId = null;
     /**
      * 保护阈值,取值0到1,默认0
      * @var float|null
      */
-    private $protectThreshold;
+    private ?float $protectThreshold = null;
     /**
      * 元数据
      * @var array|null
      */
-    private $metadata;
+    private ?array $metadata = null;
     /**
      * 访问策略
      * @var array|null
      */
-    private $selector;
+    private ?array $selector = null;
 
     public function __construct(string $serviceName)
     {
         $this->serviceName = $serviceName;
     }
 
-    /**
-     * @param ServiceModel $service
-     * @return static
-     */
     public static function loadFromServiceModel(ServiceModel $service): self
     {
         return (new static($service->serviceName))
@@ -57,89 +53,55 @@ class ServiceParams
             ->setSelector($service->selector);
     }
 
-    /**
-     * @return string
-     */
     public function getServiceName(): string
     {
         return $this->serviceName;
     }
 
-    /**
-     * @param string $serviceName
-     * @return ServiceParams
-     */
-    public function setServiceName(string $serviceName): ServiceParams
+    public function setServiceName(string $serviceName): self
     {
         $this->serviceName = $serviceName;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getGroupName(): ?string
     {
         return $this->groupName;
     }
 
-    /**
-     * @param string|null $groupName
-     * @return ServiceParams
-     */
-    public function setGroupName(?string $groupName): ServiceParams
+    public function setGroupName(?string $groupName): self
     {
         $this->groupName = $groupName;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getNamespaceId(): ?string
     {
         return $this->namespaceId;
     }
 
-    /**
-     * @param string|null $namespaceId
-     * @return ServiceParams
-     */
-    public function setNamespaceId(?string $namespaceId): ServiceParams
+    public function setNamespaceId(?string $namespaceId): self
     {
         $this->namespaceId = $namespaceId;
         return $this;
     }
 
-    /**
-     * @return float|null
-     */
     public function getProtectThreshold(): ?float
     {
         return $this->protectThreshold;
     }
 
-    /**
-     * @param float|null $protectThreshold
-     * @return ServiceParams
-     */
-    public function setProtectThreshold(?float $protectThreshold): ServiceParams
+    public function setProtectThreshold(?float $protectThreshold): self
     {
         $this->protectThreshold = $protectThreshold;
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getMetadata(): ?array
     {
         return $this->metadata;
     }
 
-    /**
-     * @return string|null
-     */
     public function getMetadataJson(): ?string
     {
         if ($this->metadata) {
@@ -148,27 +110,17 @@ class ServiceParams
         return null;
     }
 
-    /**
-     * @param array|null $metadata
-     * @return ServiceParams
-     */
-    public function setMetadata(?array $metadata): ServiceParams
+    public function setMetadata(?array $metadata): self
     {
         $this->metadata = $metadata;
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getSelector(): ?array
     {
         return $this->selector;
     }
 
-    /**
-     * @return string|null
-     */
     public function getSelectorJson(): ?string
     {
         if ($this->selector) {
@@ -177,11 +129,7 @@ class ServiceParams
         return null;
     }
 
-    /**
-     * @param array|null $selector
-     * @return ServiceParams
-     */
-    public function setSelector(?array $selector): ServiceParams
+    public function setSelector(?array $selector): self
     {
         $this->selector = $selector;
         return $this;

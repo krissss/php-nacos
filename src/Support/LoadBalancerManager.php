@@ -10,7 +10,7 @@ use Kriss\Nacos\Support\LoadBalancer\WeightedRandom;
 
 class LoadBalancerManager implements LoadBalancerManagerInterface
 {
-    protected $strategies = [
+    protected array $strategies = [
         'random' => Random::class,
         'weighted-random' => WeightedRandom::class,
     ];

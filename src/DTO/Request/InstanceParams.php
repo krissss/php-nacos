@@ -11,57 +11,57 @@ class InstanceParams
      * 服务实例IP
      * @var string
      */
-    private $ip;
+    private string $ip;
     /**
      * 服务实例port
      * @var int
      */
-    private $port;
+    private int $port;
     /**
      * 服务名
      * @var string
      */
-    private $serviceName;
+    private string $serviceName;
     /**
      * 命名空间ID
      * @var string|null
      */
-    private $namespaceId;
+    private ?string $namespaceId = null;
     /**
      * 权重
      * @var double|null
      */
-    private $weight;
+    private ?float $weight = null;
     /**
      * 是否上线
      * @var boolean|null
      */
-    private $enabled;
+    private ?bool $enabled = null;
     /**
      * 是否健康
      * @var boolean|null
      */
-    private $healthy;
+    private ?bool $healthy = null;
     /**
      * 扩展信息
      * @var array|null
      */
-    private $metadata;
+    private ?array $metadata = null;
     /**
      * 集群名
      * @var string|null
      */
-    private $clusterName;
+    private ?string $clusterName = null;
     /**
      * 分组名
      * @var string|null
      */
-    private $groupName;
+    private ?string $groupName = null;
     /**
      * 是否临时实例
      * @var boolean|null
      */
-    private $ephemeral;
+    private ?bool $ephemeral = null;
 
     public function __construct(string $ip, int $port, string $serviceName)
     {
@@ -70,10 +70,6 @@ class InstanceParams
         $this->serviceName = $serviceName;
     }
 
-    /**
-     * @param InstanceModel $instance
-     * @return static
-     */
     public static function loadFromInstanceModel(InstanceModel $instance): self
     {
         return (new static($instance->ip, $instance->port, $instance->serviceName))
@@ -88,143 +84,88 @@ class InstanceParams
             ->setEphemeral($instance->ephemeral);
     }
 
-    /**
-     * @return string
-     */
     public function getIp(): string
     {
         return $this->ip;
     }
 
-    /**
-     * @param string $ip
-     * @return InstanceParams
-     */
-    public function setIp(string $ip): InstanceParams
+    public function setIp(string $ip): self
     {
         $this->ip = $ip;
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getPort(): int
     {
         return $this->port;
     }
 
-    /**
-     * @param int $port
-     * @return InstanceParams
-     */
-    public function setPort(int $port): InstanceParams
+    public function setPort(int $port): self
     {
         $this->port = $port;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getServiceName(): string
     {
         return $this->serviceName;
     }
 
-    /**
-     * @param string $serviceName
-     * @return InstanceParams
-     */
-    public function setServiceName(string $serviceName): InstanceParams
+    public function setServiceName(string $serviceName): self
     {
         $this->serviceName = $serviceName;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getNamespaceId(): ?string
     {
         return $this->namespaceId;
     }
 
-    /**
-     * @param string|null $namespaceId
-     * @return InstanceParams
-     */
-    public function setNamespaceId(?string $namespaceId): InstanceParams
+    public function setNamespaceId(?string $namespaceId): self
     {
         $this->namespaceId = $namespaceId;
         return $this;
     }
 
-    /**
-     * @return float|null
-     */
     public function getWeight(): ?float
     {
         return $this->weight;
     }
 
-    /**
-     * @param float|null $weight
-     * @return InstanceParams
-     */
-    public function setWeight(?float $weight): InstanceParams
+    public function setWeight(?float $weight): self
     {
         $this->weight = $weight;
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getEnabled(): ?bool
     {
         return $this->enabled;
     }
 
-    /**
-     * @param bool|null $enabled
-     * @return InstanceParams
-     */
-    public function setEnabled(?bool $enabled): InstanceParams
+    public function setEnabled(?bool $enabled): self
     {
         $this->enabled = $enabled;
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getHealthy(): ?bool
     {
         return $this->healthy;
     }
 
-    /**
-     * @param bool|null $healthy
-     * @return InstanceParams
-     */
-    public function setHealthy(?bool $healthy): InstanceParams
+    public function setHealthy(?bool $healthy): self
     {
         $this->healthy = $healthy;
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getMetadata(): ?array
     {
         return $this->metadata;
     }
 
-    /**
-     * @return string|null
-     */
     public function getMetadataJson(): ?string
     {
         if ($this->metadata) {
@@ -233,65 +174,40 @@ class InstanceParams
         return null;
     }
 
-    /**
-     * @param array|null $metadata
-     * @return InstanceParams
-     */
-    public function setMetadata(?array $metadata): InstanceParams
+    public function setMetadata(?array $metadata): self
     {
         $this->metadata = $metadata;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getClusterName(): ?string
     {
         return $this->clusterName;
     }
 
-    /**
-     * @param string|null $clusterName
-     * @return InstanceParams
-     */
-    public function setClusterName(?string $clusterName): InstanceParams
+    public function setClusterName(?string $clusterName): self
     {
         $this->clusterName = $clusterName;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getGroupName(): ?string
     {
         return $this->groupName;
     }
 
-    /**
-     * @param string|null $groupName
-     * @return InstanceParams
-     */
-    public function setGroupName(?string $groupName): InstanceParams
+    public function setGroupName(?string $groupName): self
     {
         $this->groupName = $groupName;
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getEphemeral(): ?bool
     {
         return $this->ephemeral;
     }
 
-    /**
-     * @param bool|null $ephemeral
-     * @return InstanceParams
-     */
-    public function setEphemeral(?bool $ephemeral): InstanceParams
+    public function setEphemeral(?bool $ephemeral): self
     {
         $this->ephemeral = $ephemeral;
         return $this;

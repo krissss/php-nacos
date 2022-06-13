@@ -13,5 +13,5 @@ interface HttpClientInterface
      * @return mixed
      * @throws NacosException
      */
-    public function sendRequest(string $url, $options = [], $method = 'GET');
+    public function sendRequest(string $url, array $options = [], string $method = 'GET');
 }

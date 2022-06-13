@@ -11,9 +11,9 @@ use Kriss\Nacos\Support\ConfigParser;
 
 class ConfigService
 {
-    protected $container;
-    protected $configApi;
-    protected $config;
+    protected NacosContainer $container;
+    protected ConfigApi $configApi;
+    protected ConfigRepositoryInterface $config;
 
     public function __construct(NacosContainer $container)
     {
@@ -27,7 +27,7 @@ class ConfigService
      * @param ConfigModel $model
      * @return array|null
      */
-    public function get(ConfigModel $model)
+    public function get(ConfigModel $model): ?array
     {
         if ($content = $this->configApi->get(ConfigParams::loadFromConfigModel($model))) {
             return ConfigParser::parse($content, $model->type);

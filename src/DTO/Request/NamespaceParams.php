@@ -8,17 +8,17 @@ class NamespaceParams
      * 命名空间ID
      * @var string
      */
-    private $customNamespaceId;
+    private string $customNamespaceId;
     /**
      * 命名空间名
      * @var string
      */
-    private $namespaceName;
+    private string $namespaceName;
     /**
      * 命名空间描述
      * @var string|null
      */
-    private $namespaceDesc;
+    private ?string $namespaceDesc = null;
 
     public function __construct(string $customNamespaceId, string $namespaceName)
     {
@@ -26,55 +26,34 @@ class NamespaceParams
         $this->namespaceName = $namespaceName;
     }
 
-    /**
-     * @return string
-     */
     public function getCustomNamespaceId(): string
     {
         return $this->customNamespaceId;
     }
 
-    /**
-     * @param string $customNamespaceId
-     * @return NamespaceParams
-     */
-    public function setCustomNamespaceId(string $customNamespaceId): NamespaceParams
+    public function setCustomNamespaceId(string $customNamespaceId): self
     {
         $this->customNamespaceId = $customNamespaceId;
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getNamespaceName(): string
     {
         return $this->namespaceName;
     }
 
-    /**
-     * @param string $namespaceName
-     * @return NamespaceParams
-     */
-    public function setNamespaceName(string $namespaceName): NamespaceParams
+    public function setNamespaceName(string $namespaceName): self
     {
         $this->namespaceName = $namespaceName;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getNamespaceDesc(): ?string
     {
         return $this->namespaceDesc;
     }
 
-    /**
-     * @param string|null $namespaceDesc
-     * @return NamespaceParams
-     */
-    public function setNamespaceDesc(?string $namespaceDesc): NamespaceParams
+    public function setNamespaceDesc(?string $namespaceDesc): self
     {
         $this->namespaceDesc = $namespaceDesc;
         return $this;

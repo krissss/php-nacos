@@ -8,9 +8,6 @@ class AuthApi extends BaseApi
 {
     const LOGIN_URI = '/v1/auth/login';
 
-    protected $config;
-    protected $cache;
-
     /**
      * 登录
      * @param string $username

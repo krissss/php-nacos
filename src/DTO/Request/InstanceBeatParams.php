@@ -4,26 +4,11 @@ namespace Kriss\Nacos\DTO\Request;
 
 class InstanceBeatParams
 {
-    /**
-     * @var string
-     */
-    private $serviceName;
-    /**
-     * @var string|null
-     */
-    private $groupName;
-    /**
-     * @var string|null
-     */
-    private $namespaceId;
-    /**
-     * @var boolean|null
-     */
-    private $ephemeral;
-    /**
-     * @var InstanceBeatJson
-     */
-    private $beat;
+    private string $serviceName;
+    private ?string $groupName = null;
+    private ?string $namespaceId = null;
+    private ?bool $ephemeral = null;
+    private InstanceBeatJson $beat;
 
     public function __construct(string $serviceName, InstanceBeatJson $beat)
     {
@@ -31,10 +16,6 @@ class InstanceBeatParams
         $this->beat = $beat;
     }
 
-    /**
-     * @param InstanceParams $instance
-     * @return static
-     */
     public static function loadFromInstanceParams(InstanceParams $instance): self
     {
         $beatJson = new InstanceBeatJson($instance->getIp(), $instance->getPort(), $instance->getServiceName());
@@ -45,99 +26,61 @@ class InstanceBeatParams
             ->setEphemeral($instance->getEphemeral());
     }
 
-    /**
-     * @return string
-     */
     public function getServiceName(): string
     {
         return $this->serviceName;
     }
 
-    /**
-     * @param string $serviceName
-     * @return InstanceBeatParams
-     */
-    public function setServiceName(string $serviceName): InstanceBeatParams
+    public function setServiceName(string $serviceName): self
     {
         $this->serviceName = $serviceName;
         return $this;
     }
-
-    /**
-     * @return string|null
-     */
+    
     public function getGroupName(): ?string
     {
         return $this->groupName;
     }
 
-    /**
-     * @param string|null $groupName
-     * @return InstanceBeatParams
-     */
-    public function setGroupName(?string $groupName): InstanceBeatParams
+    public function setGroupName(?string $groupName): self
     {
         $this->groupName = $groupName;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getNamespaceId(): ?string
     {
         return $this->namespaceId;
     }
 
-    /**
-     * @param string|null $namespaceId
-     * @return InstanceBeatParams
-     */
-    public function setNamespaceId(?string $namespaceId): InstanceBeatParams
+    public function setNamespaceId(?string $namespaceId): self
     {
         $this->namespaceId = $namespaceId;
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getEphemeral(): ?bool
     {
         return $this->ephemeral;
     }
 
-    /**
-     * @param bool|null $ephemeral
-     * @return InstanceBeatParams
-     */
-    public function setEphemeral(?bool $ephemeral): InstanceBeatParams
+    public function setEphemeral(?bool $ephemeral): self
     {
         $this->ephemeral = $ephemeral;
         return $this;
     }
 
-    /**
-     * @return InstanceBeatJson
-     */
     public function getBeat(): InstanceBeatJson
     {
         return $this->beat;
     }
 
-    /**
-     * @return string
-     */
     public function getBeatJson(): string
     {
         return $this->beat->toJson();
     }
 
-    /**
-     * @param InstanceBeatJson $beat
-     * @return InstanceBeatParams
-     */
-    public function setBeat(InstanceBeatJson $beat): InstanceBeatParams
+    public function setBeat(InstanceBeatJson $beat): self
     {
         $this->beat = $beat;
         return $this;

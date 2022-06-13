@@ -15,12 +15,13 @@ class WeightedRandom extends AbstractLoadBalancer
         $nodes = $this->nodes;
         asort($nodes);
         $firstWeight = 0;
-        $isFirst = false;
+        $isFirst = true;
         $lowestNodes = [];
         foreach ($nodes as $key => $weight) {
-            if (!$isFirst) {
+            if ($isFirst) {
                 $firstWeight = $weight;
                 $lowestNodes[$key] = $weight;
+                $isFirst = false;
                 continue;
             }
             if ($firstWeight == $weight) {
@@ -29,7 +30,6 @@ class WeightedRandom extends AbstractLoadBalancer
             }
             break;
         }
-        var_dump($lowestNodes, array_rand($lowestNodes));
         return array_rand($lowestNodes);
     }
 }

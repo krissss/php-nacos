@@ -7,46 +7,21 @@ use Kriss\Nacos\Support\Json;
 
 class InstanceBeatJson
 {
-    /**
-     * @var string
-     */
-    private $ip;
-    /**
-     * @var int
-     */
-    private $port;
-    /**
-     * @var string
-     */
-    private $serviceName;
-    /**
-     * @var string|null
-     */
-    private $cluster;
-    /**
-     * @var int|null
-     */
-    private $weight;
-    /**
-     * @var bool|null
-     */
-    private $scheduled;
-    /**
-     * @var array|null
-     */
-    private $metadata;
+    private string $ip;
+    private int $port;
+    private string $serviceName;
+    private ?string $cluster = null;
+    private ?int $weight = null;
+    private ?bool $scheduled = null;
+    private ?array $metadata = null;
 
-    public function __construct(string $ip, string $port, string $serviceName)
+    public function __construct(string $ip, int $port, string $serviceName)
     {
         $this->ip = $ip;
         $this->port = $port;
         $this->serviceName = $serviceName;
     }
 
-    /**
-     * @param InstanceDetailModel $detailModel
-     * @return static
-     */
     public static function fromInstanceDetailModel(InstanceDetailModel $detailModel): self
     {
         $self = new static($detailModel->ip, $detailModel->port, $detailModel->service);
@@ -57,9 +32,6 @@ class InstanceBeatJson
         return $self;
     }
 
-    /**
-     * @return string
-     */
     public function toJson(): string
     {
         return Json::encode([
@@ -73,37 +45,23 @@ class InstanceBeatJson
         ]);
     }
 
-    /**
-     * @return string
-     */
     public function getIp(): string
     {
         return $this->ip;
     }
 
-    /**
-     * @param string $ip
-     * @return InstanceBeatJson
-     */
-    public function setIp(string $ip): InstanceBeatJson
+    public function setIp(string $ip): self
     {
         $this->ip = $ip;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getPort()
+    public function getPort(): int
     {
         return $this->port;
     }
 
-    /**
-     * @param int $port
-     * @return InstanceBeatJson
-     */
-    public function setPort(int $port)
+    public function setPort(int $port): self
     {
         $this->port = $port;
         return $this;
@@ -117,81 +75,50 @@ class InstanceBeatJson
         return $this->serviceName;
     }
 
-    /**
-     * @param string $serviceName
-     * @return InstanceBeatJson
-     */
-    public function setServiceName(string $serviceName): InstanceBeatJson
+    public function setServiceName(string $serviceName): self
     {
         $this->serviceName = $serviceName;
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
     public function getCluster(): ?string
     {
         return $this->cluster;
     }
 
-    /**
-     * @param string|null $cluster
-     * @return InstanceBeatJson
-     */
-    public function setCluster(?string $cluster): InstanceBeatJson
+    public function setCluster(?string $cluster): self
     {
         $this->cluster = $cluster;
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getWeight(): ?int
     {
         return $this->weight;
     }
 
-    /**
-     * @param int|null $weight
-     * @return InstanceBeatJson
-     */
-    public function setWeight(?int $weight): InstanceBeatJson
+    public function setWeight(?int $weight): self
     {
         $this->weight = $weight;
         return $this;
     }
 
-    /**
-     * @return bool|null
-     */
     public function getScheduled(): ?bool
     {
         return $this->scheduled;
     }
 
-    /**
-     * @param bool|null $scheduled
-     * @return InstanceBeatJson
-     */
-    public function setScheduled(?bool $scheduled): InstanceBeatJson
+    public function setScheduled(?bool $scheduled): self
     {
         $this->scheduled = $scheduled;
         return $this;
     }
 
-    /**
-     * @return array|null
-     */
     public function getMetadata(): ?array
     {
         return $this->metadata;
     }
 
-    /**
-     * @return string|null
-     */
     public function getMetadataJson(): ?string
     {
         if ($this->metadata) {
@@ -200,11 +127,7 @@ class InstanceBeatJson
         return null;
     }
 
-    /**
-     * @param array|null $metadata
-     * @return InstanceBeatJson
-     */
-    public function setMetadata(?array $metadata): InstanceBeatJson
+    public function setMetadata(?array $metadata): self
     {
         $this->metadata = $metadata;
         return $this;

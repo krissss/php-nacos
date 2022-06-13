@@ -6,7 +6,7 @@ use Kriss\Nacos\Contract\LoadBalancerInterface;
 
 abstract class AbstractLoadBalancer implements LoadBalancerInterface
 {
-    protected $nodes = [];
+    protected array $nodes = [];
 
     /**
      * @inheritDoc

@@ -7,23 +7,29 @@ use Kriss\Nacos\Enums\NacosResponseCode;
 use Kriss\Nacos\Exceptions\NacosException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpClient\Exception\JsonException;
+use Symfony\Component\HttpClient\HttpClient as SymfonyHttpClient;
+use Symfony\Contracts\HttpClient\HttpClientInterface as SymfonyHttpClientInterface;
 use Throwable;
 
 class HttpClient implements HttpClientInterface
 {
-    protected $logger;
-    protected $client;
+    protected LoggerInterface $logger;
+    protected SymfonyHttpClientInterface $client;
 
     public function __construct(LoggerInterface $logger)
     {
+        if (!class_exists('Symfony\Component\HttpClient\HttpClient')) {
+            throw new \InvalidArgumentException('先安装依赖：composer require symfony/http-client');
+        }
+
         $this->logger = $logger;
-        $this->client = \Symfony\Component\HttpClient\HttpClient::create();
+        $this->client = SymfonyHttpClient::create();
     }
 
     /**
      * @inheritDoc
      */
-    public function sendRequest(string $url, $options = [], $method = 'GET')
+    public function sendRequest(string $url, array $options = [], string $method = 'GET')
     {
         $this->log($requestParams = ['type' => 'request', 'uri' => $url, 'options' => $options, 'method' => $method]);
 
@@ -69,7 +75,7 @@ class HttpClient implements HttpClientInterface
      * @param mixed $messages
      * @param string $level
      */
-    public function log($messages, $level = 'debug')
+    public function log($messages, string $level = 'debug')
     {
         if (is_array($messages)) {
             $messages = Json::encode($messages);
