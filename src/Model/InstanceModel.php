@@ -35,7 +35,7 @@ class InstanceModel extends BaseModel
     public $namespaceId;
 
     /**
-     * @var null|float|float|int
+     * @var null|float|int
      */
     public $weight;
 
