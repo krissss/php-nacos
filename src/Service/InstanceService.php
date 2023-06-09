@@ -66,10 +66,11 @@ class InstanceService
 
     /**
      * 发送一次心跳
+     * @param float|null $timeout
      * @return InstanceBeatModel
      * @throws RuntimeException
      */
-    public function beatOne(): InstanceBeatModel
+    public function beatOne(?float $timeout): InstanceBeatModel
     {
         if (!$this->_beatCached) {
             $instanceApi = $this->container->get(InstanceApi::class);
@@ -85,7 +86,9 @@ class InstanceService
         if (!$detail) {
             throw new RuntimeException("instance not exist: {$instanceParams->getNamespaceId()}:{$instanceParams->getGroupName()}:{$instanceParams->getServiceName()}({$instanceParams->getNamespaceId()}:{$instanceParams->getGroupName()})");
         }
-        return $instanceApi->beat(InstanceBeatParams::loadFromInstanceParams($instanceParams));
+        return $instanceApi->beat(InstanceBeatParams::loadFromInstanceParams($instanceParams), [
+            'timeout' => $timeout ?? 5,
+        ]);
     }
 
     /**
@@ -116,11 +119,13 @@ class InstanceService
             $this->beatLog('beat over with error');
             return false;
         }
+        $beatInterval = null;
         while (true) {
             try {
-                $data = $this->beatOne();
+                $data = $this->beatOne($beatInterval);
+                $beatInterval = $data->clientBeatInterval;
                 $this->beatLog('beat');
-                usleep($data->clientBeatInterval * 1000);
+                usleep($beatInterval * 1000);
                 $retryCount = $config['maxRetryCount'];
             } catch (RuntimeException $e) {
                 $this->beatLog('beat error: ' . $e->getMessage());

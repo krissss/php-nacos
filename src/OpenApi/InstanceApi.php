@@ -126,22 +126,25 @@ class InstanceApi extends BaseApi
     /**
      * 发送实例心跳，当服务和实例不存在时会自动创建
      * @param InstanceBeatParams $params
+     * @param array $httpOptions
      * @return InstanceBeatModel
-     * @throws NacosException
      */
-    public function beat(InstanceBeatParams $params): InstanceBeatModel
+    public function beat(InstanceBeatParams $params, array $httpOptions = []): InstanceBeatModel
     {
-        $result = $this->api('/v1/ns/instance/beat', [
-            'query' => [
-                'serviceName' => $params->getServiceName(),
-                'ip' => $params->getBeat()->getIp(),
-                'port' => $params->getBeat()->getPort(),
-                'groupName' => $params->getGroupName(),
-                'namespaceId' => $params->getNamespaceId(),
-                'ephemeral' => $params->getEphemeral(),
-                'beat' => $params->getBeatJson(),
+        $result = $this->api('/v1/ns/instance/beat', array_merge(
+            [
+                'query' => [
+                    'serviceName' => $params->getServiceName(),
+                    'ip' => $params->getBeat()->getIp(),
+                    'port' => $params->getBeat()->getPort(),
+                    'groupName' => $params->getGroupName(),
+                    'namespaceId' => $params->getNamespaceId(),
+                    'ephemeral' => $params->getEphemeral(),
+                    'beat' => $params->getBeatJson(),
+                ]
             ],
-        ], 'PUT');
+            $httpOptions
+        ), 'PUT');
         return new InstanceBeatModel($result);
     }
 
